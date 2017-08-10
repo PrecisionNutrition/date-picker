@@ -1,3 +1,14 @@
-<h2 id="title">Welcome to Ember</h2>
+<dl>
+  <dt>Current value:</dt>
+  <dd data-test-selector="current-value">{{currentValue}}</dd>
+</dl>
 
-{{outlet}}
+{{date-picker
+  value=currentValue
+  min=minimum
+  max=maximum
+  placeholder='Pick a date'
+  isMobile=isMobile
+  on-change=(action 'onChange')
+  data-test-selector='date-picker-wrapper'
+  }}

@@ -72,7 +72,7 @@ export default Component.extend({
       selectableYears.push(String(i));
     }
 
-    return selectableYears;
+    return selectableYears.reverse();
   }),
 
   // This boolean is being used to determine whether we should use native (mobile) controls for date input.
