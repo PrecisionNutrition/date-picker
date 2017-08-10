@@ -1,26 +1,3 @@
-# date-picker
+# date-picker [![Build Status](https://travis-ci.com/PrecisionNutrition/date-picker.svg?token=Y8mfZMTrTcJd8Mz5UCHm&branch=master)](https://travis-ci.com/PrecisionNutrition/date-picker)
 
-This README outlines the details of collaborating on this Ember addon.
-
-## Installation
-
-* `git clone <repository-url>` this repository
-* `cd date-picker`
-* `npm install`
-
-## Running
-
-* `ember serve`
-* Visit your app at [http://localhost:4200](http://localhost:4200).
-
-## Running Tests
-
-* `npm test` (Runs `ember try:each` to test your addon against multiple Ember versions)
-* `ember test`
-* `ember test --server`
-
-## Building
-
-* `ember build`
-
-For more information on using ember-cli, visit [https://ember-cli.com/](https://ember-cli.com/).
+First there was [shared-ember-components](https://github.com/PrecisionNutrition/shared-ember-components), Graham spoketh "This is crazy. Every time I touch a component's style, we have to update everything." And so `{{date-picker` was extracted, and so shall all of the other components.
