@@ -1,0 +1,175 @@
+import { moduleForComponent, test } from 'ember-qunit';
+import hbs from 'htmlbars-inline-precompile';
+import moment from 'moment';
+import { click, fillIn, find } from 'ember-native-dom-helpers';
+
+moduleForComponent('date-picker', 'Integration | Component | date picker [DESKTOP]', {
+  integration: true,
+});
+
+test('sets value on input field', async function(assert) {
+  let testDate = new Date();
+  this.set('testDate', testDate);
+
+  this.render(hbs`{{date-picker
+    value=testDate
+    isMobile=false
+  }}`);
+
+  let elem = find('input');
+
+  let dateString = moment(testDate).format('MMMM D, YYYY');
+
+  assert.equal(
+    elem.value,
+    dateString,
+    'sets value correctly on picker'
+  );
+});
+
+test('sets placeholder on input field', async function(assert) {
+  this.render(hbs`{{date-picker
+    placeholder='Type here'
+    isMobile=false
+  }}`);
+
+  let elem = find('input');
+
+  assert.equal(
+    elem.getAttribute('placeholder'),
+    'Type here',
+    'sets placeholder correctly on picker'
+  );
+});
+
+test('next month button works', async function(assert) {
+  this.render(hbs`{{date-picker
+    isMobile=false
+  }}`);
+
+  await click('[data-test-selector="date-picker-trigger"]');
+
+  await click('[data-test-selector="next-month-button"]');
+
+  let calendarNav = await find('[data-test-selector="calendar-nav"]');
+
+  let centerVal = calendarNav.getAttribute('data-test-center-value');
+
+  let centerDate = moment(Date.parse(centerVal));
+
+  let currentDate = moment();
+
+  let diff = Math.round(centerDate.diff(currentDate, 'month', true));
+
+  assert.equal(
+    diff,
+    1,
+    'center has been advanced by one month'
+  );
+});
+
+test('previous month button works', async function(assert) {
+  this.render(hbs`{{date-picker
+    isMobile=false
+  }}`);
+
+  await click('[data-test-selector="date-picker-trigger"]');
+
+  await click('[data-test-selector="previous-month-button"]');
+
+  let calendarNav = await find('[data-test-selector="calendar-nav"]');
+
+  let centerVal = calendarNav.getAttribute('data-test-center-value');
+
+  let centerDate = moment(Date.parse(centerVal));
+
+  let currentDate = moment();
+
+  let diff = Math.round(centerDate.diff(currentDate, 'month', true));
+
+  assert.equal(
+    diff,
+    -1,
+    'center has been advanced by one month'
+  );
+});
+
+test('month drop down works', async function(assert) {
+  this.render(hbs`{{date-picker
+    isMobile=false
+  }}`);
+
+  await click('[data-test-selector="date-picker-trigger"]');
+
+  let monthSelector = find('[data-test-selector="month-selector"]');
+
+  let calendarNav = find('[data-test-selector="calendar-nav"]');
+
+  await fillIn(monthSelector, 'April');
+
+  assert.equal(
+    monthSelector.value,
+    'April',
+    'month should be selected'
+  );
+
+  let centerDateString = calendarNav.getAttribute('data-test-center-value');
+  let centerDate = moment(centerDateString);
+
+  assert.equal(
+    centerDate.get('month'),
+    3,
+    'correct month should be selected'
+  );
+
+  await fillIn(monthSelector, 'January');
+
+  centerDateString = calendarNav.getAttribute('data-test-center-value');
+  centerDate = moment(centerDateString);
+
+  assert.equal(
+    centerDate.get('month'),
+    0,
+    'correct month should be selected'
+  );
+});
+
+test('year drop down works', async function(assert) {
+  this.render(hbs`{{date-picker
+    isMobile=false
+  }}`);
+
+  await click('[data-test-selector="date-picker-trigger"]');
+
+  let yearSelector = find('[data-test-selector="year-selector"]');
+
+  let calendarNav = find('[data-test-selector="calendar-nav"]');
+
+  await fillIn(yearSelector, '2013');
+
+  assert.equal(
+    yearSelector.value,
+    2013,
+    'year should be selected'
+  );
+
+  let centerDateString = calendarNav.getAttribute('data-test-center-value');
+  let centerDate = moment(centerDateString);
+
+  assert.equal(
+    centerDate.get('year'),
+    2013,
+    'correct year should be set'
+  );
+
+  await fillIn(yearSelector, 2018);
+
+  centerDateString = calendarNav.getAttribute('data-test-center-value');
+  centerDate = moment(centerDateString);
+
+  assert.equal(
+    centerDate.get('year'),
+    2018,
+    'correct year should be set'
+  );
+});

@@ -1,0 +1,1 @@
+export { default } from 'date-picker/components/date-picker';

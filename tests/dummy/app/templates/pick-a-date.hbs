@@ -1,0 +1,14 @@
+<dl>
+  <dt>Current value:</dt>
+  <dd data-test-selector="current-value">{{currentValue}}</dd>
+</dl>
+
+{{date-picker
+  value=currentValue
+  min=minimum
+  max=maximum
+  placeholder='Pick a date'
+  isMobile=false
+  on-change=(action 'onChange')
+  data-test-selector='date-picker-wrapper'
+  }}

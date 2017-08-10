@@ -1,6 +1,11 @@
 import Ember from 'ember';
 import Application from '../../app';
 import config from '../../config/environment';
+import registerPowerDatepickerHelpers from '../../tests/helpers/ember-power-datepicker';
+import registerBasicDropdownHelpers from '../../tests/helpers/ember-basic-dropdown';
+
+registerPowerDatepickerHelpers();
+registerBasicDropdownHelpers();
 
 export default function startApp(attrs) {
   let attributes = Ember.merge({}, config.APP);
