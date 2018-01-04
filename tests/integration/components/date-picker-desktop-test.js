@@ -173,3 +173,47 @@ test('year drop down works', async function(assert) {
     'correct year should be set'
   );
 });
+
+test('correctly initializes center value', async function(assert) {
+  let maximum = new Date('2030-01-01');
+  this.set('maximum', maximum);
+
+  this.render(hbs`{{date-picker
+    maximum=maximum
+    isMobile=false
+  }}`);
+
+  await click('[data-test-selector="date-picker-trigger"]');
+
+  let calendarNav = find('[data-test-selector="calendar-nav"]');
+  let centerDateString = calendarNav.getAttribute('data-test-center-value');
+  let centerDate = moment(centerDateString);
+
+  assert.equal(
+    centerDate.get('year'),
+    moment().year(),
+    'correct year should be set'
+  );
+});
+
+test('initializes center value to maximum if max is in the past', async function(assert) {
+  let maximum = new Date('2010-12-31');
+  this.set('maximum', maximum);
+
+  this.render(hbs`{{date-picker
+    max=maximum
+    isMobile=false
+  }}`);
+
+  await click('[data-test-selector="date-picker-trigger"]');
+
+  let calendarNav = find('[data-test-selector="calendar-nav"]');
+  let centerDateString = calendarNav.getAttribute('data-test-center-value');
+  let centerDate = moment(centerDateString);
+
+  assert.equal(
+    centerDate.get('year'),
+    2010,
+    'correct year should be set'
+  );
+});

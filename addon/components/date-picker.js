@@ -33,6 +33,14 @@ export default Component.extend({
     'December',
   ],
 
+  center: computed('max', function() {
+    let max = this.get('max');
+
+    if (!moment().isBefore(moment(max))) {
+      return max;
+    }
+  }),
+
   maximum: computed('max', function() {
     let defaultValue = moment().add(1, 'year').startOf('day').toDate();
     let val = this.get('max') || defaultValue;
