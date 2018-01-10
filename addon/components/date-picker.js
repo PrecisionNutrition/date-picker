@@ -1,13 +1,29 @@
+import Component from '@ember/component';
+import { computed } from '@ember/object';
 import config from 'ember-get-config';
-import Ember from 'ember';
 import moment from 'moment';
 import bowser from 'ember-bowser';
 import layout from '../templates/components/date-picker';
 
-const {
-  Component,
-  computed,
-} = Ember;
+const selectableMonthOptions = [
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December',
+];
+
+const isMobile = config.environment === 'test' ||
+  bowser.mobile ||
+  bowser.tablet &&
+  (bowser.name === 'Internet Explorer' && parseInt(bowser.version) !== 11);
 
 export default Component.extend({
   layout,
@@ -18,20 +34,7 @@ export default Component.extend({
 
   inputClass: 'Input u-sizeFull p1 mt1',
 
-  selectableMonthOptions: [
-    'January',
-    'February',
-    'March',
-    'April',
-    'May',
-    'June',
-    'July',
-    'August',
-    'September',
-    'October',
-    'November',
-    'December',
-  ],
+  selectableMonthOptions,
 
   center: computed('max', function() {
     let max = this.get('max');
@@ -87,7 +90,7 @@ export default Component.extend({
   // IE11 with a touch screen (or Wacom tablet) sets bowser.tablet to true, which breaks our logic here.
   // Windows mobiles don't present as "Internet Explorer", so by using a stricter check we can avoid this issue.
   // https://github.com/ded/bowser/issues/89
-  isMobile: (config.environment === 'test' || bowser.mobile || bowser.tablet && (bowser.name === 'Internet Explorer' && parseInt(bowser.version) !== 11)),
+  isMobile,
 
   actions: {
     // http://www.ember-power-calendar.com/cookbook/nav-select

@@ -1,8 +1,5 @@
-import Ember from 'ember';
-
-const {
-  Controller,
-} = Ember;
+import Controller from '@ember/controller';
+import { computed } from '@ember/object';
 
 export default Controller.extend({
   queryParams: [
@@ -11,9 +8,13 @@ export default Controller.extend({
 
   isMobile: false,
 
-  minimum: new Date(2015, 0, 1),
+  minimum: computed(function() {
+    return new Date(2015, 0, 1);
+  }),
 
-  maximum: new Date(2016, 0, 1),
+  maximum: computed(function() {
+    return new Date(2016, 0, 1);
+  }),
 
   actions: {
     onChange(newValue) {

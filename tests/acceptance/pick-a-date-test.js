@@ -6,14 +6,9 @@ moduleForAcceptance('Acceptance | pick a date');
 test('sanity check pick a date', function(assert) {
   let expectedValue = new Date(2015, 0, 2);
 
-  visit('/pick-a-date');
+  visit('/');
 
   andThen(function() {
-    assert.equal(
-      currentURL(),
-      '/pick-a-date'
-    );
-
     datepickerSelect(
       '[data-test-selector="date-picker-wrapper"]',
       expectedValue
