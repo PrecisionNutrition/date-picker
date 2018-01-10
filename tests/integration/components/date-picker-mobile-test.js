@@ -133,3 +133,14 @@ test('setting a value when a handler has been set', async function(assert) {
     'sets date correctly on mobile picker input field'
   );
 });
+test('can disable the input', function(assert) {
+  this.render(hbs`{{date-picker
+    max=maximum
+    isDisabled=true
+    isMobile=true
+    }}`);
+
+  let field = find('[data-test-selector="input-field"]');
+
+  assert.ok(field.disabled);
+});
