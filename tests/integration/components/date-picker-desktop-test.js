@@ -217,3 +217,15 @@ test('initializes center value to maximum if max is in the past', async function
     'correct year should be set'
   );
 });
+
+test('can disable the trigger field', function(assert) {
+  this.render(hbs`{{date-picker
+    max=maximum
+    isMobile=false
+    isDisabled=true
+    }}`);
+
+  let field = find('[data-test-selector="date-picker-trigger"]');
+
+  assert.ok(field.disabled);
+});
