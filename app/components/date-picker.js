@@ -1,1 +1,1 @@
-export { default } from 'date-picker/components/date-picker';
+export { default } from '@precision-nutrition/date-picker/components/date-picker';
