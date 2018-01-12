@@ -9,11 +9,11 @@ export default Controller.extend({
   isMobile: false,
 
   minimum: computed(function() {
-    return new Date(2015, 0, 1);
+    return new Date(2010, 0, 1);
   }),
 
   maximum: computed(function() {
-    return new Date(2016, 0, 1);
+    return new Date(2017, 0, 1);
   }),
 
   actions: {
