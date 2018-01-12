@@ -32,13 +32,15 @@
 
     {{#dp.content class='DatePicker'}}
       <nav class="ember-power-calendar-nav" data-test-selector="calendar-nav" data-test-center-value={{moment-format dp.center 'YYYY-MM-DD'}}>
-        <button
-          class="ember-power-calendar-nav-control ember-power-calendar-nav-control--previous"
-          type="button"
-          data-test-selector="previous-month-button"
-          onclick={{action dp.actions.moveCenter -1 'month'}}>
-          ◀
-        </button>
+        {{#if (or (not min) (is-after dp.center min precision='month'))}}
+          <button
+            class="ember-power-calendar-nav-control ember-power-calendar-nav-control--previous"
+            type="button"
+            data-test-selector="previous-month-button"
+            onclick={{action dp.actions.moveCenter -1 'month'}}>
+            ◀
+          </button>
+        {{/if}}
 
         <div class="ember-power-calendar-dropdowns-holder">
           {{#with (moment-format dp.center 'MMMM') as |currentMonth|}}
@@ -68,14 +70,16 @@
           {{/with}}
         </div>
 
-        <button
-          class="ember-power-calendar-nav-control ember-power-calendar-nav-control--next"
-          type="button"
-          data-test-selector="next-month"
-          onclick={{action dp.actions.moveCenter 1 'month'}}
-          data-test-selector="next-month-button">
-          ▶
-        </button>
+        {{#if (or (not max) (is-before dp.center max precision='month'))}}
+          <button
+            class="ember-power-calendar-nav-control ember-power-calendar-nav-control--next"
+            type="button"
+            data-test-selector="next-month"
+            onclick={{action dp.actions.moveCenter 1 'month'}}
+            data-test-selector="next-month-button">
+            ▶
+          </button>
+        {{/if}}
       </nav>
 
       {{dp.days
