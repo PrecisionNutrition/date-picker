@@ -217,3 +217,72 @@ test('initializes center value to maximum if max is in the past', async function
     'correct year should be set'
   );
 });
+
+test('can disable the trigger field', function(assert) {
+  this.render(hbs`{{date-picker
+    max=maximum
+    isMobile=false
+    isDisabled=true
+    }}`);
+
+  let field = find('[data-test-selector="date-picker-trigger"]');
+
+  assert.ok(field.disabled);
+});
+
+test('next month button is disabled when max is reached', async function(assert) {
+  let maximum = new Date('2010-12-31');
+  this.set('maximum', maximum);
+
+  this.render(hbs`{{date-picker
+    max=maximum
+    isMobile=false
+    }}`);
+
+  await click('[data-test-selector="date-picker-trigger"]');
+
+  let nextButton = find('[data-test-selector="next-month-button"]');
+
+  assert.ok(
+    nextButton.disabled,
+    'next button is disabled'
+  );
+
+  await click('[data-test-selector="previous-month-button"]');
+
+  nextButton = find('[data-test-selector="next-month-button"]');
+
+  assert.notOk(
+    nextButton.disabled,
+    'next button is shown'
+  );
+});
+
+test('previous month button is disabled when min is reached', async function(assert) {
+  let minimum = new Date('2010-01-01');
+  this.set('min', minimum);
+  let center = new Date('2010-02-01');
+  this.set('center', center);
+
+  this.render(hbs`{{date-picker
+    center=center
+    min=min
+    isMobile=false
+    }}`);
+
+  await click('[data-test-selector="date-picker-trigger"]');
+
+  let prevButton = find('[data-test-selector="previous-month-button"]');
+
+  assert.notOk(
+    prevButton.disabled,
+    'prev button is enabled'
+  );
+
+  await click('[data-test-selector="previous-month-button"]');
+
+  assert.ok(
+    prevButton.disabled,
+    'prev button is disabled'
+  );
+});
