@@ -5,14 +5,11 @@ node_js:
   # so that your addon works for all apps
   - "8"
 
-sudo: required
+sudo: false
 dist: trusty
 
 addons:
   chrome: stable
-
-sudo: required
-dist: trusty
 
 cache:
   yarn: true
