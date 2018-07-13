@@ -1,9 +1,8 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render } from '@ember/test-helpers';
+import { click, fillIn, find, render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import moment from 'moment';
-import { click, fillIn, find } from 'ember-native-dom-helpers';
 
 module('Integration | Component | date picker [DESKTOP]', function(hooks) {
   setupRenderingTest(hooks);
