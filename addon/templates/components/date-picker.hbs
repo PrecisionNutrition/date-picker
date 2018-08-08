@@ -9,12 +9,14 @@
    class={{inputClass}}
    min={{moment-format minimum 'YYYY-MM-DD' timeZone='UTC'}}
    max={{moment-format maximum 'YYYY-MM-DD' timeZone='UTC'}}
+   required={{required}}
    data-test-selector="input-field">
 {{else}}
   {{#power-datepicker
     selected=value
     onSelect=(action 'setValueAndValidate' value='date')
     disabled=isDisabled
+    verticalPosition=verticalPosition
     center=center
     as |dp|}}
     {{#dp.trigger
