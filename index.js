@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = {
-  name: '@precision-nutrition/date-picker',
+  name: require('./package').name,
 
   contentFor(type, config) {
     // https://github.com/cibernox/ember-power-select/issues/145#issuecomment-170012836
