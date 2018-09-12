@@ -1,8 +1,8 @@
 import Component from '@ember/component';
 import { computed } from '@ember/object';
-import config from 'ember-get-config';
+import { readOnly } from '@ember/object/computed';
+import { inject as service } from '@ember/service';
 import moment from 'moment';
-import bowser from 'ember-bowser';
 import layout from '../templates/components/date-picker';
 
 const selectableMonthOptions = [
@@ -19,11 +19,6 @@ const selectableMonthOptions = [
   'November',
   'December',
 ];
-
-const isMobile = config.environment === 'test' ||
-  bowser.mobile ||
-  bowser.tablet &&
-  (bowser.name === 'Internet Explorer' && parseInt(bowser.version) !== 11);
 
 export default Component.extend({
   layout,
@@ -86,11 +81,9 @@ export default Component.extend({
     return selectableYears.reverse();
   }),
 
-  // This boolean is being used to determine whether we should use native (mobile) controls for date input.
-  // IE11 with a touch screen (or Wacom tablet) sets bowser.tablet to true, which breaks our logic here.
-  // Windows mobiles don't present as "Internet Explorer", so by using a stricter check we can avoid this issue.
-  // https://github.com/ded/bowser/issues/89
-  isMobile,
+  datePicker: service(),
+
+  isNativePickerDisplayed: readOnly('datePicker.isNativePickerDisplayed'),
 
   actions: {
     // http://www.ember-power-calendar.com/cookbook/nav-select
@@ -106,7 +99,7 @@ export default Component.extend({
 
       // pickadate doesn't know anything about time zones
       // https://github.com/amsul/pickadate.js/issues/875
-      let date = this.get('isMobile') ? moment(newDate).toDate() : newDate;
+      let date = this.get('isNativePickerDisplayed') ? moment(newDate).toDate() : newDate;
 
       // TODO Remove this once we're using fullscreen-card-renderer everywhere
       let onChange = this.get('on-change');

@@ -20,7 +20,6 @@
     "test:all": "ember try:each"
   },
   "dependencies": {
-    "ember-bowser": "^0.0.1",
     "ember-cli-babel": "^6.6.0",
     "ember-cli-htmlbars": "^2.0.1",
     "ember-power-datepicker": "~0.5.2"
@@ -40,7 +39,6 @@
     "ember-cli-uglify": "^2.0.0",
     "ember-disable-prototype-extensions": "^1.1.2",
     "ember-export-application-global": "^2.0.0",
-    "ember-get-config": "^0.2.2",
     "ember-load-initializers": "^1.1.0",
     "ember-maybe-import-regenerator": "^0.1.6",
     "ember-moment": "^7.7.0",
