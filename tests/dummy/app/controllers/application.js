@@ -3,10 +3,8 @@ import { computed } from '@ember/object';
 
 export default Controller.extend({
   queryParams: [
-    'isMobile',
+    'isNativePickerDisplayed',
   ],
-
-  isMobile: false,
 
   minimum: computed(function() {
     return new Date(2010, 0, 1);
