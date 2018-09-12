@@ -1,4 +1,5 @@
-{{#if isMobile}}
+{{log isNativePickerDisplayed}}
+{{#if isNativePickerDisplayed}}
   <input
    type="date"
    value={{moment-format value 'YYYY-MM-DD' timeZone='UTC'}}

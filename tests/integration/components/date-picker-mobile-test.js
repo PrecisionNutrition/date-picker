@@ -1,11 +1,20 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { fillIn, find, render } from '@ember/test-helpers';
+import Service from '@ember/service';
 import hbs from 'htmlbars-inline-precompile';
 import moment from 'moment';
 
+const datePickerServiceStub = Service.extend({
+  isNativePickerDisplayed: true,
+});
+
 module('Integration | Component | date picker [MOBILE]', function(hooks) {
   setupRenderingTest(hooks);
+
+  hooks.beforeEach(function() {
+    this.owner.register('service:date-picker', datePickerServiceStub);
+  });
 
   test('sets min and max on input field', async function(assert) {
     let min = moment().subtract(5, 'years').toDate();
@@ -19,7 +28,6 @@ module('Integration | Component | date picker [MOBILE]', function(hooks) {
     await render(hbs`{{date-picker
       min=min
       max=max
-      isMobile=true
     }}`);
 
     let elem = find('input');
@@ -43,7 +51,6 @@ module('Integration | Component | date picker [MOBILE]', function(hooks) {
 
     await render(hbs`{{date-picker
       value=testDate
-      isMobile=true
     }}`);
 
     let currentValue = find('input').value;
@@ -79,7 +86,6 @@ module('Integration | Component | date picker [MOBILE]', function(hooks) {
   test('sets placeholder on input field', async function(assert) {
     await render(hbs`{{date-picker
       placeholder='Type here'
-      isMobile=true
     }}`);
 
     let elem = find('input');
@@ -111,7 +117,6 @@ module('Integration | Component | date picker [MOBILE]', function(hooks) {
 
     await render(hbs`{{date-picker
       value=testDate
-      isMobile=true
       on-change=(action onChange)
     }}`);
 
@@ -137,7 +142,6 @@ module('Integration | Component | date picker [MOBILE]', function(hooks) {
     await render(hbs`{{date-picker
       max=maximum
       isDisabled=true
-      isMobile=true
       }}`);
 
     let field = find('[data-test-selector="input-field"]');

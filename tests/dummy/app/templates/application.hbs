@@ -3,12 +3,21 @@
   <dd data-test-selector="current-value">{{currentValue}}</dd>
 </dl>
 
+<button
+  type="button"
+  {{action 'toggleNative'}}>
+
+  Toggle native picker
+
+</button>
+
+<hr>
+
 {{date-picker
   value=currentValue
   min=minimum
   max=maximum
   placeholder='Pick a date'
-  isMobile=isMobile
   on-change=(action 'onChange')
   data-test-selector='date-picker-wrapper'
   }}
