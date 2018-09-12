@@ -1,11 +1,20 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { click, fillIn, find, render } from '@ember/test-helpers';
+import Service from '@ember/service';
 import hbs from 'htmlbars-inline-precompile';
 import moment from 'moment';
 
+const DatePickerService = Service.extend({
+  isNativeDatePickerDisplayed: false,
+});
+
 module('Integration | Component | date picker [DESKTOP]', function(hooks) {
   setupRenderingTest(hooks);
+
+  hooks.beforeEach(function() {
+    this.owner.register('service:date-picker', DatePickerService);
+  });
 
   test('sets value on input field', async function(assert) {
     let testDate = new Date();
@@ -13,7 +22,6 @@ module('Integration | Component | date picker [DESKTOP]', function(hooks) {
 
     await render(hbs`{{date-picker
       value=testDate
-      isMobile=false
     }}`);
 
     let elem = find('input');
@@ -30,7 +38,6 @@ module('Integration | Component | date picker [DESKTOP]', function(hooks) {
   test('sets placeholder on input field', async function(assert) {
     await render(hbs`{{date-picker
       placeholder='Type here'
-      isMobile=false
     }}`);
 
     let elem = find('input');
@@ -44,7 +51,6 @@ module('Integration | Component | date picker [DESKTOP]', function(hooks) {
 
   test('next month button works', async function(assert) {
     await render(hbs`{{date-picker
-      isMobile=false
     }}`);
 
     await click('[data-test-selector="date-picker-trigger"]');
@@ -70,7 +76,6 @@ module('Integration | Component | date picker [DESKTOP]', function(hooks) {
 
   test('previous month button works', async function(assert) {
     await render(hbs`{{date-picker
-      isMobile=false
     }}`);
 
     await click('[data-test-selector="date-picker-trigger"]');
@@ -95,9 +100,7 @@ module('Integration | Component | date picker [DESKTOP]', function(hooks) {
   });
 
   test('month drop down works', async function(assert) {
-    await render(hbs`{{date-picker
-      isMobile=false
-    }}`);
+    await render(hbs`{{date-picker}}`);
 
     await click('[data-test-selector="date-picker-trigger"]');
 
@@ -135,9 +138,7 @@ module('Integration | Component | date picker [DESKTOP]', function(hooks) {
   });
 
   test('year drop down works', async function(assert) {
-    await render(hbs`{{date-picker
-      isMobile=false
-    }}`);
+    await render(hbs`{{date-picker}}`);
 
     await click('[data-test-selector="date-picker-trigger"]');
 
@@ -180,7 +181,6 @@ module('Integration | Component | date picker [DESKTOP]', function(hooks) {
 
     await render(hbs`{{date-picker
       maximum=maximum
-      isMobile=false
     }}`);
 
     await click('[data-test-selector="date-picker-trigger"]');
@@ -202,7 +202,6 @@ module('Integration | Component | date picker [DESKTOP]', function(hooks) {
 
     await render(hbs`{{date-picker
       max=maximum
-      isMobile=false
     }}`);
 
     await click('[data-test-selector="date-picker-trigger"]');
@@ -221,7 +220,6 @@ module('Integration | Component | date picker [DESKTOP]', function(hooks) {
   test('can disable the trigger field', async function(assert) {
     await render(hbs`{{date-picker
       max=maximum
-      isMobile=false
       isDisabled=true
       }}`);
 
@@ -236,7 +234,6 @@ module('Integration | Component | date picker [DESKTOP]', function(hooks) {
 
     await render(hbs`{{date-picker
       max=maximum
-      isMobile=false
       }}`);
 
     await click('[data-test-selector="date-picker-trigger"]');
@@ -267,7 +264,6 @@ module('Integration | Component | date picker [DESKTOP]', function(hooks) {
     await render(hbs`{{date-picker
       center=center
       min=min
-      isMobile=false
       }}`);
 
     await click('[data-test-selector="date-picker-trigger"]');
