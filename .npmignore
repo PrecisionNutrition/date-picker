@@ -13,6 +13,7 @@
 /.eslintrc.js
 /.gitignore
 /.watchmanconfig
+/.template-lintrc.js
 /.travis.yml
 /.circleci
 /bower.json
