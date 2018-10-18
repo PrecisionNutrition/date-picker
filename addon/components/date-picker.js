@@ -81,6 +81,23 @@ export default Component.extend({
     return selectableYears.reverse();
   }),
 
+  init() {
+    this._super(...arguments);
+
+    let explicitCenter = this.get('explicitCenter');
+    let value = this.get('value');
+
+    if (!explicitCenter) {
+      return;
+    }
+
+    if (explicitCenter && value) {
+      this.set('center', value);
+    } else {
+      this.set('center', explicitCenter);
+    }
+  },
+
   datePicker: service(),
 
   isNativePickerDisplayed: readOnly('datePicker.isNativePickerDisplayed'),

@@ -215,6 +215,28 @@ module('Integration | Component | date picker', function(hooks) {
       );
     });
 
+    test('correctly initializes center value when explicitly set', async function(assert) {
+      let dateInThePast = '1979-06-01';
+      let explicitCenter = new Date(dateInThePast);
+      this.set('explicitCenter', explicitCenter);
+
+      await render(hbs`{{date-picker
+        explicitCenter=explicitCenter
+      }}`);
+
+      await click('[data-test-selector="date-picker-trigger"]');
+
+      let calendarNav = find('[data-test-selector="calendar-nav"]');
+      let centerDateString = calendarNav.getAttribute('data-test-center-value');
+      let centerDate = moment(centerDateString);
+
+      assert.equal(
+        centerDate.get('year'),
+        1979,
+        'correct year should be set'
+      );
+    });
+
     test('can disable the trigger field', async function(assert) {
       await render(hbs`{{date-picker
         max=maximum
