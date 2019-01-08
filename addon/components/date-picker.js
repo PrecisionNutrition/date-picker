@@ -106,7 +106,7 @@ export default Component.extend({
 
       // pickadate doesn't know anything about time zones
       // https://github.com/amsul/pickadate.js/issues/875
-      let date = this.get('isMobile') ? moment(newDate).toDate() : newDate;
+      let date = this.get('isMobile') ? new Date(newDate) : newDate;
 
       // TODO Remove this once we're using fullscreen-card-renderer everywhere
       let onChange = this.get('on-change');
