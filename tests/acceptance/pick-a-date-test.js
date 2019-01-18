@@ -6,7 +6,7 @@ module('Acceptance | pick a date', function(hooks) {
   setupApplicationTest(hooks);
 
   test('sanity check pick a date', async function(assert) {
-    let expectedValue = new Date(2015, 0, 2);
+    let expectedValue = '2015-01-02';
 
     await visit('/');
 

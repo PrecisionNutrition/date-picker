@@ -31,6 +31,20 @@ export default Component.extend({
 
   selectableMonthOptions,
 
+  castedValue: computed('value', function() {
+    let value = this.get('value');
+
+    if (!value) {
+      return null;
+    }
+
+    let isNativePickerDisplayed = this.get('isNativePickerDisplayed');
+    let casted = moment(value, 'YYYY-MM-DD');
+
+    // Native input wants YYYY-MM-DD, desktop fancy picker wants a date object
+    return isNativePickerDisplayed ? casted.format('YYYY-MM-DD') : casted.toDate();
+  }),
+
   center: computed('max', function() {
     let max = this.get('max');
 
@@ -116,7 +130,7 @@ export default Component.extend({
 
       // pickadate doesn't know anything about time zones
       // https://github.com/amsul/pickadate.js/issues/875
-      let date = this.get('isNativePickerDisplayed') ? moment(newDate).toDate() : newDate;
+      let date = moment(newDate).format('YYYY-MM-DD');
 
       // TODO Remove this once we're using fullscreen-card-renderer everywhere
       let onChange = this.get('on-change');
