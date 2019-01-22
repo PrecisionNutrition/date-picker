@@ -15,8 +15,50 @@ module('Integration | Component | date picker', function(hooks) {
     });
 
     test('sets value on input field', async function(assert) {
-      let testDate = new Date();
+      let testDate = moment().format('YYYY-MM-DD');
+
       this.set('testDate', testDate);
+
+      await render(hbs`{{date-picker
+        value=testDate
+      }}`);
+
+      let elem = find('input');
+
+      let dateString = moment(testDate).format('MMMM D, YYYY');
+
+      assert.equal(
+        elem.value,
+        dateString,
+        'sets value correctly on picker'
+      );
+    });
+
+    test('supports legacy date object value', async function(assert) {
+      let testDate = new Date();
+
+      this.set('testDate', testDate);
+
+      await render(hbs`{{date-picker
+        value=testDate
+      }}`);
+
+      let elem = find('input');
+
+      let dateString = moment(testDate).format('MMMM D, YYYY');
+
+      assert.equal(
+        elem.value,
+        dateString,
+        'sets value correctly on picker'
+      );
+    });
+
+    test('supports legacy localstorage value', async function(assert) {
+      let testDate = new Date();
+      let testDateInIsoFormat = testDate.toISOString();
+
+      this.set('testDate', testDateInIsoFormat);
 
       await render(hbs`{{date-picker
         value=testDate
@@ -339,8 +381,47 @@ module('Integration | Component | date picker', function(hooks) {
     });
 
     test('sets value on input field', async function(assert) {
+      let initialDate = '2016-10-01';
+      let newDate = '2018-01-18';
+
+      this.set('testDate', initialDate);
+
+      await render(hbs`{{date-picker
+        value=testDate
+      }}`);
+
+      let currentValue = find('input').value;
+
+      assert.equal(
+        currentValue,
+        moment(initialDate).format('YYYY-MM-DD'),
+        'hydrates the value correctly'
+      );
+
+      let elem = find('input');
+
+      await fillIn(elem, newDate);
+
+      let expectedDateValue = moment(newDate, 'YYYY-MM-DD')
+        .startOf('day')
+        .utcOffset(0)
+        .toDate();
+
+      assert.equal(
+        elem.value,
+        newDate,
+        'sets date correctly on mobile picker input field'
+      );
+
+      assert.deepEqual(
+        this.get('testDate'),
+        expectedDateValue,
+        'sets value correctly'
+      );
+    });
+
+    test('supports legacy date object value', async function(assert) {
       let testDate = new Date();
-      let requestedDate = '2016-10-01';
 
       this.set('testDate', testDate);
 
@@ -355,26 +436,24 @@ module('Integration | Component | date picker', function(hooks) {
         moment(testDate).format('YYYY-MM-DD'),
         'hydrates the value correctly'
       );
+    });
 
-      let elem = find('input');
+    test('supports legacy localstorage value', async function(assert) {
+      let testDate = new Date();
+      let testDateInIsoFormat = testDate.toISOString();
 
-      await fillIn(elem, requestedDate);
+      this.set('testDate', testDateInIsoFormat);
 
-      let expectedDateValue = moment(requestedDate, 'YYYY-MM-DD')
-        .startOf('day')
-        .utcOffset(0)
-        .toDate();
+      await render(hbs`{{date-picker
+        value=testDate
+      }}`);
+
+      let currentValue = find('input').value;
 
       assert.equal(
-        elem.value,
-        requestedDate,
-        'sets date correctly on mobile picker input field'
-      );
-
-      assert.deepEqual(
-        this.get('testDate'),
-        expectedDateValue,
-        'sets value correctly'
+        currentValue,
+        moment(testDate).format('YYYY-MM-DD'),
+        'hydrates the value correctly'
       );
     });
 
@@ -398,14 +477,12 @@ module('Integration | Component | date picker', function(hooks) {
       let testDate = new Date();
       let requestedDate = '2016-10-01';
 
-      let expectedDateValue = moment(requestedDate, 'YYYY-MM-DD').startOf('day').utcOffset(0).toDate();
-
       this.set('testDate', testDate);
 
       this.set('onChange', (value) => {
         assert.deepEqual(
           value,
-          expectedDateValue,
+          requestedDate,
           'passes new value to handler'
         );
       });

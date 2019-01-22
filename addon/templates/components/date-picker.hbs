@@ -1,7 +1,7 @@
 {{#if isNativePickerDisplayed}}
   <input
     type="date"
-    value={{moment-format value "YYYY-MM-DD"}}
+    value={{castedValue}}
     name={{name}}
     disabled={{isDisabled}}
     placeholder={{placeholder}}
@@ -14,7 +14,7 @@
   >
 {{else}}
   {{#power-datepicker
-    selected=value
+    selected=castedValue
     onSelect=(action "setValueAndValidate" value="date")
     disabled=isDisabled
     center=center
