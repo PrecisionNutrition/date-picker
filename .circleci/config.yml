@@ -95,20 +95,6 @@ jobs:
 
             yarn ember try:one ember-release --skip-cleanup
 
-  run_antique_tests:
-    <<: *defaults
-
-    steps:
-      - attach_workspace:
-          at: .
-
-      - run:
-          name: 'Run Tests for Ember 2.18'
-          command: |
-            npm config set //registry.npmjs.org/:_authToken $NPM_TOKEN
-
-            yarn ember try:one ember-lts-2.18 --skip-cleanup
-
   run_beta_tests:
     <<: *defaults
 
