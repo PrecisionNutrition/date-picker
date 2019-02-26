@@ -22,7 +22,8 @@
   "dependencies": {
     "ember-cli-babel": "^6.16.0",
     "ember-cli-htmlbars": "^3.0.0",
-    "ember-power-datepicker": "~0.5.2"
+    "ember-power-calendar-moment": "^0.1.4",
+    "ember-power-datepicker": "~0.5.3"
   },
   "devDependencies": {
     "@ember/optional-features": "^0.6.3",
