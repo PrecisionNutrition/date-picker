@@ -119,7 +119,7 @@ export default Component.extend({
   actions: {
     // http://www.ember-power-calendar.com/cookbook/nav-select
     changeCenter(unit, calendar, { target: { value } }) {
-      let newCenter = calendar.center.clone()[unit](value);
+      let newCenter = moment(calendar.center).clone()[unit](value);
 
       calendar.actions.changeCenter(newCenter);
     },
