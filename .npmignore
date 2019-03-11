@@ -9,6 +9,7 @@
 /.bowerrc
 /.editorconfig
 /.ember-cli
+/.env*
 /.eslintignore
 /.eslintrc.js
 /.gitignore
@@ -18,6 +19,7 @@
 /.circleci
 /bower.json
 /config/ember-try.js
+/CONTRIBUTING.md
 /ember-cli-build.js
 /testem.js
 /tests/
