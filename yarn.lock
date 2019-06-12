@@ -3179,7 +3179,7 @@ ember-cli-babel@^6.0.0-beta.7, ember-cli-babel@^6.8.1:
     ember-cli-version-checker "^2.1.0"
     semver "^5.4.1"
 
-ember-cli-babel@^7.1.0, ember-cli-babel@^7.2.0:
+ember-cli-babel@^7.1.0, ember-cli-babel@^7.2.0, ember-cli-babel@^7.7.3:
   version "7.7.3"
   resolved "https://registry.yarnpkg.com/ember-cli-babel/-/ember-cli-babel-7.7.3.tgz#f94709f6727583d18685ca6773a995877b87b8a0"
   integrity sha512-/LWwyKIoSlZQ7k52P+6agC7AhcOBqPJ5C2u27qXHVVxKvCtg6ahNuRk/KmfZmV4zkuw4EjTZxfJE1PzpFyHkXg==
@@ -3618,12 +3618,12 @@ ember-moment@^7.7.0:
     ember-macro-helpers "^2.1.0"
 
 ember-power-calendar-moment@^0.1.4:
-  version "0.1.4"
-  resolved "https://registry.yarnpkg.com/ember-power-calendar-moment/-/ember-power-calendar-moment-0.1.4.tgz#9233c11266eceba160132eff4a92772c11e13abb"
-  integrity sha512-TsFtxOMJi22hbIF24yemFZvdQ5PFi6TVY4mIAFrt/DROhJfn/On7+jvz9Q9gyjo1GWxOTbc722md7czstHTTuQ==
+  version "0.1.7"
+  resolved "https://registry.yarnpkg.com/ember-power-calendar-moment/-/ember-power-calendar-moment-0.1.7.tgz#2e79125f449bdcc94e62afff4e5411012792ed43"
+  integrity sha512-tkxGrSfJJq3MkgDQXfKr3o2vJp8kTokcyZnSxwGC1KByMv/TgtDp4+74cTzaK/Di0qnj5AYeeElwEEcGIn4F3A==
   dependencies:
-    broccoli-funnel "^2.0.1"
-    ember-cli-babel "^6.6.0"
+    broccoli-funnel "^2.0.2"
+    ember-cli-babel "^7.7.3"
     ember-cli-moment-shim "^3.7.1"
 
 ember-power-calendar@^0.12.0:
