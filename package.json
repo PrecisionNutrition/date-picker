@@ -23,7 +23,7 @@
     "ember-cli-babel": "^7.7.3",
     "ember-cli-htmlbars": "^3.0.1",
     "ember-power-calendar-moment": "^0.1.4",
-    "ember-power-datepicker": "github:jherdman/ember-power-datepicker#remove-native-dom-helpers"
+    "ember-power-datepicker": "^0.6.1"
   },
   "devDependencies": {
     "@ember/optional-features": "^0.7.0",
