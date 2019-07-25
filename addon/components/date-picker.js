@@ -45,19 +45,29 @@ export default Component.extend({
     return isNativePickerDisplayed ? casted.format('YYYY-MM-DD') : casted.toDate();
   }),
 
-  center: computed('max', function() {
-    let max = this.get('max');
+  center: computed('max', {
+    get() {
+      let max = this.get('max');
 
-    if (!moment().isBefore(moment(max))) {
-      return max;
-    }
+      if (!moment().isBefore(moment(max))) {
+        return max;
+      }
+    },
+    set(_, v) {
+      return v;
+    },
   }),
 
-  maximum: computed('max', function() {
-    let defaultValue = moment().add(1, 'year').startOf('day').toDate();
-    let val = this.get('max') || defaultValue;
+  maximum: computed('max', {
+    get() {
+      let defaultValue = moment().add(1, 'year').startOf('day').toDate();
+      let val = this.get('max') || defaultValue;
 
-    return val;
+      return val;
+    },
+    set(_, v) {
+      return v;
+    },
   }),
 
   minimum: computed('min', function() {
