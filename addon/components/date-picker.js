@@ -31,70 +31,6 @@ export default Component.extend({
 
   selectableMonthOptions,
 
-  castedValue: computed('value', function() {
-    let value = this.get('value');
-
-    if (!value) {
-      return null;
-    }
-
-    let isNativePickerDisplayed = this.get('isNativePickerDisplayed');
-    let casted = moment(value, 'YYYY-MM-DD');
-
-    // Native input wants YYYY-MM-DD, desktop fancy picker wants a date object
-    return isNativePickerDisplayed ? casted.format('YYYY-MM-DD') : casted.toDate();
-  }),
-
-  center: computed('max', function() {
-    let max = this.get('max');
-
-    if (!moment().isBefore(moment(max))) {
-      return max;
-    }
-  }),
-
-  maximum: computed('max', function() {
-    let defaultValue = moment().add(1, 'year').startOf('day').toDate();
-    let val = this.get('max') || defaultValue;
-
-    return val;
-  }),
-
-  minimum: computed('min', function() {
-    let defaultValue = moment().subtract(100, 'years').startOf('day').toDate();
-    let val = this.get('min') || defaultValue;
-
-    return val;
-  }),
-
-  minYear: computed('minimum', function() {
-    let minimum = this.get('minimum');
-
-    return minimum.getFullYear();
-  }),
-
-  maxYear: computed('maximum', function() {
-    let maximum = this.get('maximum');
-
-    return maximum.getFullYear();
-  }),
-
-  selectableYearOptions: computed('minYear', 'maxYear', function() {
-    let {
-      minYear,
-      maxYear,
-    } = this.getProperties('minYear', 'maxYear');
-
-    let selectableYears = [];
-
-    for (let i = minYear; i <= maxYear; i++) {
-      // values must be strings for equality to work correctly in the template
-      selectableYears.push(String(i));
-    }
-
-    return selectableYears.reverse();
-  }),
-
   init() {
     this._super(...arguments);
 
@@ -115,6 +51,76 @@ export default Component.extend({
   datePicker: service(),
 
   isNativePickerDisplayed: readOnly('datePicker.isNativePickerDisplayed'),
+
+  castedValue: computed('value', function() {
+    let { value } = this;
+
+    if (!value) {
+      return null;
+    }
+
+    let { isNativePickerDisplayed } = this;
+    let casted = moment(value, 'YYYY-MM-DD');
+
+    // Native input wants YYYY-MM-DD, desktop fancy picker wants a date object
+    return isNativePickerDisplayed ? casted.format('YYYY-MM-DD') : casted.toDate();
+  }),
+
+  center: computed('max', {
+    get() {
+      let { max } = this;
+
+      if (!moment().isBefore(moment(max))) {
+        return max;
+      }
+    },
+    set(_, v) {
+      return v;
+    },
+  }),
+
+  maximum: computed('max', {
+    get() {
+      let defaultValue = moment().add(1, 'year').startOf('day').toDate();
+      let val = this.max || defaultValue;
+
+      return val;
+    },
+    set(_, v) {
+      return v;
+    },
+  }),
+
+  minimum: computed('min', function() {
+    let defaultValue = moment().subtract(100, 'years').startOf('day').toDate();
+    let val = this.min || defaultValue;
+
+    return val;
+  }),
+
+  minYear: computed('minimum', function() {
+    return this.minimum.getFullYear();
+  }),
+
+  maxYear: computed('maximum', function() {
+    return this.maximum.getFullYear();
+  }),
+
+  selectableYearOptions: computed('minYear', 'maxYear', function() {
+    let {
+      minYear,
+      maxYear,
+    } = this;
+
+    let selectableYears = [];
+
+    for (let i = minYear; i <= maxYear; i++) {
+      // values must be strings for equality to work correctly in the template
+      selectableYears.push(String(i));
+    }
+
+    return selectableYears.reverse();
+  }),
 
   actions: {
     // http://www.ember-power-calendar.com/cookbook/nav-select

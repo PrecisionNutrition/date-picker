@@ -2,105 +2,100 @@
   <input
     type="date"
     value={{castedValue}}
-    name={{name}}
-    disabled={{isDisabled}}
+    name={{@name}}
+    disabled={{@isDisabled}}
     placeholder={{placeholder}}
     onchange={{action "setValueAndValidate" value="target.value"}}
     class={{inputClass}}
     min={{moment-format minimum "YYYY-MM-DD" timeZone="UTC"}}
     max={{moment-format maximum "YYYY-MM-DD" timeZone="UTC"}}
-    required={{required}}
+    required={{@required}}
     data-test-selector="input-field"
   >
 {{else}}
-  {{#power-datepicker
-    selected=castedValue
-    onSelect=(action "setValueAndValidate" value="date")
-    disabled=isDisabled
-    center=center
-    verticalPosition=verticalPosition
-    as |dp|
-    }}
-    {{#dp.trigger
-      tabindex="-1"
-      }}
+  <PowerDatepicker
+    @selected={{castedValue}}
+    @onSelect={{action "setValueAndValidate" value="date"}}
+    @disabled={{@isDisabled}}
+    @center={{center}}
+    @verticalPosition={{@verticalPosition}}
+  as |Picker|
+  >
+    <Picker.trigger @tabindex="-1">
       <input
         type="text"
-        name={{name}}
-        placeholder={{placeholder}}
-        value={{moment-format dp.selected "MMMM D, YYYY" allowEmpty=true}}
+        name={{@name}}
+        placeholder={{@placeholder}}
+        value={{moment-format Picker.selected "MMMM D, YYYY" allowEmpty=true}}
         class={{inputClass}}
-        disabled={{isDisabled}}
+        disabled={{@isDisabled}}
         readonly
-        data-test-selector="date-picker-trigger">
-    {{/dp.trigger}}
+        data-test-selector="date-picker-trigger"
+      >
+    </Picker.trigger>
 
-    {{#dp.content class="DatePicker"}}
+    <Picker.content class="DatePicker">
       <nav 
         class="ember-power-calendar-nav"
         data-test-selector="calendar-nav"
-        data-test-center-value={{moment-format dp.center "YYYY-MM-DD"}}>
-
+        data-test-center-value={{moment-format Picker.center "YYYY-MM-DD"}}
+      >
         <button
           class="ember-power-calendar-nav-control ember-power-calendar-nav-control--previous"
           type="button"
           data-test-selector="previous-month-button"
-          disabled={{and min (is-same-or-before dp.center min precision="month")}}
-          onclick={{action dp.actions.moveCenter -1 "month"}}>
-
+          disabled={{and @min (is-same-or-before Picker.center @min precision="month")}}
+          onclick={{action Picker.actions.moveCenter -1 "month"}}
+        >
           ◀
-
         </button>
 
         <div class="ember-power-calendar-dropdowns-holder">
-          {{#with (moment-format dp.center "MMMM") as |currentMonth|}}
+          {{#let (moment-format Picker.center "MMMM") as |currentMonth|}}
             <select
               class="ember-power-calendar-nav-dropdown"
-              onchange={{action "changeCenter" "month" dp}}
-              data-test-selector="month-selector">
-
+              onchange={{action "changeCenter" "month" Picker}}
+              data-test-selector="month-selector"
+            >
               {{#each selectableMonthOptions as |opt|}}
                 <option selected={{eq opt currentMonth}} value={{opt}}>
                   {{opt}}
                 </option>
               {{/each}}
-
             </select>
-          {{/with}}
+          {{/let}}
 
-          {{#with (moment-format dp.center "YYYY") as |currentYear|}}
+          {{#let (moment-format Picker.center "YYYY") as |currentYear|}}
             <select
               class="ember-power-calendar-nav-dropdown"
-              onchange={{action "changeCenter" "year" dp}}
-              data-test-selector="year-selector">
-
+              onchange={{action "changeCenter" "year" Picker}}
+              data-test-selector="year-selector"
+            >
               {{#each selectableYearOptions as |opt|}}
                 <option selected={{eq opt currentYear}} value={{opt}}>
                   {{opt}}
                 </option>
               {{/each}}
-
             </select>
-          {{/with}}
+          {{/let}}
         </div>
 
         <button
           class="ember-power-calendar-nav-control ember-power-calendar-nav-control--next"
           type="button"
-          disabled={{and max (is-same-or-after dp.center max precision="month")}}
-          onclick={{action dp.actions.moveCenter 1 "month"}}
-          data-test-selector="next-month-button">
-
+          disabled={{and @max (is-same-or-after Picker.center @max precision="month")}}
+          onclick={{action Picker.actions.moveCenter 1 "month"}}
+          data-test-selector="next-month-button"
+        >
           ▶
-
         </button>
       </nav>
 
-      {{dp.days
-        minDate=minimum
-        maxDate=maximum
+      <Picker.days
+        @minDate={{minimum}}
+        @maxDate={{maximum}}
         class="DatePicker-days"
-        }}
-    {{/dp.content}}
-  {{/power-datepicker}}
+      />
+    </Picker.content>
+  </PowerDatepicker>
 {{/if}}
