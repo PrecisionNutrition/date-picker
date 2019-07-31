@@ -34,8 +34,10 @@ export default Component.extend({
   init() {
     this._super(...arguments);
 
-    let explicitCenter = this.get('explicitCenter');
-    let value = this.get('value');
+    let {
+      explicitCenter,
+      value,
+    } = this;
 
     if (!explicitCenter) {
       return;
