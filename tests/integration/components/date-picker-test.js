@@ -14,14 +14,24 @@ module('Integration | Component | date picker', function(hooks) {
       dps.set('isNativePickerDisplayed', false);
     });
 
+    test('custom classes are applied', async function(assert) {
+      await render(hbs`<DatePicker />`);
+
+      await click('[data-test-selector="date-picker-trigger"]');
+
+      assert
+        .dom('[data-test-selector="date-picker-content"]')
+        .hasClass('DatePicker');
+    });
+
     test('sets value on input field', async function(assert) {
       let testDate = moment().format('YYYY-MM-DD');
 
       this.set('testDate', testDate);
 
-      await render(hbs`{{date-picker
-        value=testDate
-      }}`);
+      await render(hbs`<DatePicker
+        @value={{testDate}}
+      />`);
 
       let elem = find('input');
 
@@ -39,9 +49,9 @@ module('Integration | Component | date picker', function(hooks) {
 
       this.set('testDate', testDate);
 
-      await render(hbs`{{date-picker
-        value=testDate
-      }}`);
+      await render(hbs`<DatePicker
+        @value={{testDate}}
+      />`);
 
       let elem = find('input');
 
@@ -60,9 +70,9 @@ module('Integration | Component | date picker', function(hooks) {
 
       this.set('testDate', testDateInIsoFormat);
 
-      await render(hbs`{{date-picker
-        value=testDate
-      }}`);
+      await render(hbs`<DatePicker
+        @value={{testDate}}
+      />`);
 
       let elem = find('input');
 
@@ -76,9 +86,9 @@ module('Integration | Component | date picker', function(hooks) {
     });
 
     test('sets placeholder on input field', async function(assert) {
-      await render(hbs`{{date-picker
-        placeholder='Type here'
-      }}`);
+      await render(hbs`<DatePicker
+        @placeholder="Type here"
+      />`);
 
       let elem = find('input');
 
@@ -90,8 +100,7 @@ module('Integration | Component | date picker', function(hooks) {
     });
 
     test('next month button works', async function(assert) {
-      await render(hbs`{{date-picker
-      }}`);
+      await render(hbs`<DatePicker />`);
 
       await click('[data-test-selector="date-picker-trigger"]');
 
@@ -115,8 +124,7 @@ module('Integration | Component | date picker', function(hooks) {
     });
 
     test('previous month button works', async function(assert) {
-      await render(hbs`{{date-picker
-      }}`);
+      await render(hbs`<DatePicker />`);
 
       await click('[data-test-selector="date-picker-trigger"]');
 
@@ -140,7 +148,7 @@ module('Integration | Component | date picker', function(hooks) {
     });
 
     test('month drop down works', async function(assert) {
-      await render(hbs`{{date-picker}}`);
+      await render(hbs`<DatePicker />`);
 
       await click('[data-test-selector="date-picker-trigger"]');
 
@@ -178,7 +186,7 @@ module('Integration | Component | date picker', function(hooks) {
     });
 
     test('year drop down works', async function(assert) {
-      await render(hbs`{{date-picker}}`);
+      await render(hbs`<DatePicker />`);
 
       await click('[data-test-selector="date-picker-trigger"]');
 
@@ -219,9 +227,9 @@ module('Integration | Component | date picker', function(hooks) {
       let maximum = new Date('2030-01-01');
       this.set('maximum', maximum);
 
-      await render(hbs`{{date-picker
-        maximum=maximum
-      }}`);
+      await render(hbs`<DatePicker
+        @maximum={{maximum}}
+      />`);
 
       await click('[data-test-selector="date-picker-trigger"]');
 
@@ -240,9 +248,9 @@ module('Integration | Component | date picker', function(hooks) {
       let maximum = new Date('2010-12-31');
       this.set('maximum', maximum);
 
-      await render(hbs`{{date-picker
-        max=maximum
-      }}`);
+      await render(hbs`<DatePicker
+        @max={{maximum}}
+      />`);
 
       await click('[data-test-selector="date-picker-trigger"]');
 
@@ -262,9 +270,9 @@ module('Integration | Component | date picker', function(hooks) {
       let explicitCenter = new Date(dateInThePast);
       this.set('explicitCenter', explicitCenter);
 
-      await render(hbs`{{date-picker
-        explicitCenter=explicitCenter
-      }}`);
+      await render(hbs`<DatePicker
+        @explicitCenter={{explicitCenter}}
+      />`);
 
       await click('[data-test-selector="date-picker-trigger"]');
 
@@ -280,10 +288,10 @@ module('Integration | Component | date picker', function(hooks) {
     });
 
     test('can disable the trigger field', async function(assert) {
-      await render(hbs`{{date-picker
-        max=maximum
-        isDisabled=true
-        }}`);
+      await render(hbs`<DatePicker
+        @max={{maximum}}
+        @isDisabled={{true}}
+      />`);
 
       let field = find('[data-test-selector="date-picker-trigger"]');
 
@@ -294,9 +302,9 @@ module('Integration | Component | date picker', function(hooks) {
       let maximum = new Date('2010-12-31');
       this.set('maximum', maximum);
 
-      await render(hbs`{{date-picker
-        max=maximum
-        }}`);
+      await render(hbs`<DatePicker
+        @max={{maximum}}
+      />`);
 
       await click('[data-test-selector="date-picker-trigger"]');
 
@@ -323,10 +331,10 @@ module('Integration | Component | date picker', function(hooks) {
       let center = new Date('2010-02-01');
       this.set('center', center);
 
-      await render(hbs`{{date-picker
-        center=center
-        min=min
-        }}`);
+      await render(hbs`<DatePicker
+        @center={{center}}
+        @min={{min}}
+      />`);
 
       await click('[data-test-selector="date-picker-trigger"]');
 
@@ -362,10 +370,10 @@ module('Integration | Component | date picker', function(hooks) {
         max,
       });
 
-      await render(hbs`{{date-picker
-        min=min
-        max=max
-      }}`);
+      await render(hbs`<DatePicker
+        @min={{min}}
+        @max={{max}}
+      />`);
 
       let elem = find('input');
 
@@ -386,9 +394,9 @@ module('Integration | Component | date picker', function(hooks) {
 
       this.set('testDate', initialDate);
 
-      await render(hbs`{{date-picker
-        value=testDate
-      }}`);
+      await render(hbs`<DatePicker
+        @value={{testDate}}
+      />`);
 
       let currentValue = find('input').value;
 
@@ -425,9 +433,9 @@ module('Integration | Component | date picker', function(hooks) {
 
       this.set('testDate', testDate);
 
-      await render(hbs`{{date-picker
-        value=testDate
-      }}`);
+      await render(hbs`<DatePicker
+        @value={{testDate}}
+      />`);
 
       let currentValue = find('input').value;
 
@@ -444,9 +452,9 @@ module('Integration | Component | date picker', function(hooks) {
 
       this.set('testDate', testDateInIsoFormat);
 
-      await render(hbs`{{date-picker
-        value=testDate
-      }}`);
+      await render(hbs`<DatePicker
+        @value={{testDate}}
+      />`);
 
       let currentValue = find('input').value;
 
@@ -458,9 +466,9 @@ module('Integration | Component | date picker', function(hooks) {
     });
 
     test('sets placeholder on input field', async function(assert) {
-      await render(hbs`{{date-picker
-        placeholder='Type here'
-      }}`);
+      await render(hbs`<DatePicker
+        @placeholder="Type here"
+      />`);
 
       let elem = find('input');
 
@@ -487,10 +495,10 @@ module('Integration | Component | date picker', function(hooks) {
         );
       });
 
-      await render(hbs`{{date-picker
-        value=testDate
-        on-change=(action onChange)
-      }}`);
+      await render(hbs`<DatePicker
+        @value={{testDate}}
+        @on-change={{action onChange}}
+      />`);
 
       let elem = find('input');
 
@@ -512,10 +520,10 @@ module('Integration | Component | date picker', function(hooks) {
     });
 
     test('can disable the input', async function(assert) {
-      await render(hbs`{{date-picker
-        max=maximum
-        isDisabled=true
-        }}`);
+      await render(hbs`<DatePicker
+        @max={{maximum}}
+        @isDisabled={{true}}
+      />`);
 
       let field = find('[data-test-selector="input-field"]');
 
