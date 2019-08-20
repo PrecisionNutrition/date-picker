@@ -14,6 +14,16 @@ module('Integration | Component | date picker', function(hooks) {
       dps.set('isNativePickerDisplayed', false);
     });
 
+    test('custom classes are applied', async function(assert) {
+      await render(hbs`<DatePicker />`);
+
+      await click('[data-test-selector="date-picker-trigger"]');
+
+      assert
+        .dom('[data-test-selector="date-picker-content"]')
+        .hasClass('DatePicker');
+    });
+
     test('sets value on input field', async function(assert) {
       let testDate = moment().format('YYYY-MM-DD');
 

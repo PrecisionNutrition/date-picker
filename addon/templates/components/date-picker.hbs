@@ -21,7 +21,7 @@
     @verticalPosition={{@verticalPosition}}
   as |Picker|
   >
-    <Picker.trigger @tabindex="-1">
+    <Picker.Trigger @tabindex="-1">
       <input
         type="text"
         name={{@name}}
@@ -32,9 +32,12 @@
         readonly
         data-test-selector="date-picker-trigger"
       >
-    </Picker.trigger>
+    </Picker.Trigger>
 
-    <Picker.content class="DatePicker">
+    <Picker.Content
+      class="DatePicker"
+      data-test-selector="date-picker-content"
+    >
       <nav 
         class="ember-power-calendar-nav"
         data-test-selector="calendar-nav"
@@ -91,11 +94,11 @@
         </button>
       </nav>
 
-      <Picker.days
+      <Picker.Days
         @minDate={{minimum}}
         @maxDate={{maximum}}
         class="DatePicker-days"
       />
-    </Picker.content>
+    </Picker.Content>
   </PowerDatepicker>
 {{/if}}
