@@ -106,7 +106,7 @@ module('Integration | Component | date picker', function(hooks) {
 
       await click('[data-test-selector="next-month-button"]');
 
-      let calendarNav = await find('[data-test-selector="calendar-nav"]');
+      let calendarNav = find('[data-test-selector="calendar-nav"]');
 
       let centerVal = calendarNav.getAttribute('data-test-center-value');
 
@@ -130,7 +130,7 @@ module('Integration | Component | date picker', function(hooks) {
 
       await click('[data-test-selector="previous-month-button"]');
 
-      let calendarNav = await find('[data-test-selector="calendar-nav"]');
+      let calendarNav = find('[data-test-selector="calendar-nav"]');
 
       let centerVal = calendarNav.getAttribute('data-test-center-value');
 
@@ -224,7 +224,7 @@ module('Integration | Component | date picker', function(hooks) {
     });
 
     test('correctly initializes center value', async function(assert) {
-      let maximum = new Date('2030-01-01');
+      let maximum = new Date(2030, 0, 0);
       this.set('maximum', maximum);
 
       await render(hbs`<DatePicker
@@ -245,7 +245,7 @@ module('Integration | Component | date picker', function(hooks) {
     });
 
     test('initializes center value to maximum if max is in the past', async function(assert) {
-      let maximum = new Date('2010-12-31');
+      let maximum = new Date(2010, 11, 30);
       this.set('maximum', maximum);
 
       await render(hbs`<DatePicker
@@ -256,10 +256,10 @@ module('Integration | Component | date picker', function(hooks) {
 
       let calendarNav = find('[data-test-selector="calendar-nav"]');
       let centerDateString = calendarNav.getAttribute('data-test-center-value');
-      let centerDate = moment(centerDateString);
+      let centerDate = new Date(Date.parse(centerDateString));
 
       assert.equal(
-        centerDate.get('year'),
+        centerDate.getFullYear(),
         2010,
         'correct year should be set'
       );
@@ -299,58 +299,61 @@ module('Integration | Component | date picker', function(hooks) {
     });
 
     test('next month button is disabled when max is reached', async function(assert) {
-      let maximum = new Date('2010-12-31');
-      this.set('maximum', maximum);
+      const nextButtonSelector = '[data-test-selector="next-month-button"]';
+
+      let max = new Date(2010, 11, 31);
+      let center = new Date(2010, 10, 30);
+
+      this.setProperties({
+        max,
+        center,
+      });
 
       await render(hbs`<DatePicker
-        @max={{maximum}}
+        @explicitCenter={{center}}
+        @max={{max}}
       />`);
 
       await click('[data-test-selector="date-picker-trigger"]');
 
-      let nextButton = find('[data-test-selector="next-month-button"]');
+      assert
+        .dom(nextButtonSelector)
+        .isNotDisabled();
 
-      assert.ok(
-        nextButton.disabled,
-        'next button is disabled'
-      );
+      await click(nextButtonSelector);
 
-      await click('[data-test-selector="previous-month-button"]');
-
-      nextButton = find('[data-test-selector="next-month-button"]');
-
-      assert.notOk(
-        nextButton.disabled,
-        'next button is shown'
-      );
+      assert
+        .dom(nextButtonSelector)
+        .isDisabled();
     });
 
     test('previous month button is disabled when min is reached', async function(assert) {
-      let minimum = new Date('2010-01-01');
-      this.set('min', minimum);
-      let center = new Date('2010-02-01');
-      this.set('center', center);
+      const prevButtonSelector = '[data-test-selector="previous-month-button"]';
+
+      let min = new Date(2010, 0, 0);
+      let center = new Date(2010, 1, 0);
+
+      this.setProperties({
+        min,
+        center,
+      });
 
       await render(hbs`<DatePicker
-        @center={{center}}
+        @explicitCenter={{center}}
         @min={{min}}
       />`);
 
       await click('[data-test-selector="date-picker-trigger"]');
 
-      let prevButton = find('[data-test-selector="previous-month-button"]');
+      assert
+        .dom(prevButtonSelector)
+        .isNotDisabled();
 
-      assert.notOk(
-        prevButton.disabled,
-        'prev button is enabled'
-      );
+      await click(prevButtonSelector);
 
-      await click('[data-test-selector="previous-month-button"]');
-
-      assert.ok(
-        prevButton.disabled,
-        'prev button is disabled'
-      );
+      assert
+        .dom(prevButtonSelector)
+        .isDisabled();
     });
   });
 

@@ -74,6 +74,8 @@ export default Component.extend({
 
       if (!moment().isBefore(moment(max))) {
         return max;
+      } else {
+        return null;
       }
     },
     set(_, v) {
@@ -153,6 +155,6 @@ export default Component.extend({
 
         this.set('value', atMidnightUtc);
       }
-    }
-  }
+    },
+  },
 });
