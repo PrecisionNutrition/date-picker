@@ -153,6 +153,6 @@ export default Component.extend({
 
         this.set('value', atMidnightUtc);
       }
-    }
-  }
+    },
+  },
 });

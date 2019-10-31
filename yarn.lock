@@ -787,6 +787,11 @@
   dependencies:
     "@glimmer/di" "^0.2.0"
 
+"@precision-nutrition/eslint-config@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@precision-nutrition/eslint-config/-/eslint-config-1.0.0.tgz#8b45a602aa9f7b61e9bd3cde8fe44d2d0ecb9116"
+  integrity sha512-BJHpJYdRUXo4RY5hiO8MjMy+0fQL1EU5teeSrF2w5M1HoCfK4o4sAvYEkZtU+uPbYRYt4pawBdp7T7Xr41iJ8w==
+
 "@sindresorhus/is@^0.7.0":
   version "0.7.0"
   resolved "https://registry.yarnpkg.com/@sindresorhus/is/-/is-0.7.0.tgz#9a06f4f137ee84d7df0460c1fdb1135ffa6c50fd"
