@@ -18,8 +18,7 @@
     @onSelect={{action "setValueAndValidate" value="date"}}
     @disabled={{@isDisabled}}
     @center={{center}}
-    @verticalPosition={{@verticalPosition}}
-  as |Picker|
+    @verticalPosition={{@verticalPosition}} as |Picker|
   >
     <Picker.Trigger @tabindex="-1">
       <input
@@ -38,7 +37,7 @@
       class="DatePicker"
       data-test-selector="date-picker-content"
     >
-      <nav 
+      <nav
         class="ember-power-calendar-nav"
         data-test-selector="calendar-nav"
         data-test-center-value={{moment-format Picker.center "YYYY-MM-DD"}}

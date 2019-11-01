@@ -64,8 +64,8 @@ jobs:
           at: .
 
       - run:
-          name: 'Run JS Lint'
-          command: yarn lint:js
+          name: 'Run Lint'
+          command: yarn lint
 
   run_default_tests:
     <<: *defaults
