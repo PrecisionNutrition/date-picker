@@ -7,7 +7,7 @@
 defaults: &defaults
   docker:
     # specify the version you desire here
-    - image: circleci/node:8-browsers
+    - image: circleci/node:12-browsers
       environment:
         JOBS: 2
         BROWSERSTACK_USERNAME: pntechteam1
@@ -77,7 +77,20 @@ jobs:
       - run:
           name: 'Run Tests for Default Ember'
           command: |
-            yarn test
+            yarn test:ember
+
+  run_lts_3.16_tests:
+    <<: *defaults
+
+    steps:
+      - attach_workspace:
+          at: .
+
+      - run:
+          name: 'Run Tests for Ember Release'
+          command: |
+            yarn ember try:one ember-lts-3.16 --skip-cleanup
+
 
   run_release_tests:
     <<: *defaults
@@ -142,6 +155,10 @@ workflows:
             - install_dependencies
 
       - run_default_tests:
+          requires:
+            - lint_project
+
+      - run_lts_3.16_tests:
           requires:
             - lint_project
 

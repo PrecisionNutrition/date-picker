@@ -1,5 +1,5 @@
 import Service from '@ember/service';
 
-export default Service.extend({
-  isNativePickerDisplayed: false,
-});
+export default class DatePicker extends Service {
+  isNativePickerDisplayed = false;
+}

@@ -1,25 +1,29 @@
 <dl>
   <dt>Current value:</dt>
-  <dd data-test-selector="current-value">{{currentValue}}</dd>
+  <dd data-test-selector="current-value">
+    {{this.currentValue}}
+  </dd>
+
+  <dt>Is Native Displayed:</dt>
+  <dd data-test-is-native-displayed>
+    {{this.datePicker.isNativePickerDisplayed}}
+  </dd>
 </dl>
 
 <button
   type="button"
-  {{action "toggleNative"}}
+  {{on "click" this.toggleNative}}
 >
-
   Toggle native picker
-
 </button>
 
 <hr>
 
 <DatePicker
-  @value={{currentValue}}
-  @min={{minimum}}
-  @max={{maximum}}
+  @value={{this.currentValue}}
+  @min={{this.minimum}}
+  @max={{this.maximum}}
   @placeholder="Pick a date"
-  @isMobile={{isMobile}}
-  @on-change={{action "onChange"}}
+  @onChange={{this.onChange}}
   data-test-selector="date-picker-wrapper"
 />
