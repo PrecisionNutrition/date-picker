@@ -2,7 +2,12 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { click, fillIn, find, render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
-import moment from 'moment';
+
+import safeParse from '@precision-nutrition/date-picker/-private/safe-parse';
+
+import formatDate from 'date-fns/format';
+import startOfDay from 'date-fns/startOfDay';
+import subDate from 'date-fns/sub';
 
 module('Integration | Component | date picker', function(hooks) {
   setupRenderingTest(hooks);
@@ -25,7 +30,7 @@ module('Integration | Component | date picker', function(hooks) {
     });
 
     test('sets value on input field', async function(assert) {
-      let testDate = moment().format('YYYY-MM-DD');
+      const testDate = '2020-05-22';
 
       this.set('testDate', testDate);
 
@@ -43,64 +48,38 @@ module('Integration | Component | date picker', function(hooks) {
       assert
         .dom('input')
         .hasValue(
-          moment(testDate).format('MMMM D, YYYY'),
+          formatDate(new Date(2020, 4, 22), 'MMMM d, yyyy'),
           'sets value correctly on picker',
         );
     });
 
-    test('supports legacy date object value', async function(assert) {
+    test('supports date object value', async function(assert) {
       let testDate = new Date();
 
       this.set('testDate', testDate);
 
-      await render(hbs`<DatePicker
-        @value={{testDate}}
-      />`);
+      await render(hbs`<DatePicker @value={{this.testDate}} />`);
 
-      let elem = find('input');
+      let dateString = formatDate(testDate, 'MMMM d, yyyy');
 
-      let dateString = moment(testDate).format('MMMM D, YYYY');
-
-      assert.equal(
-        elem.value,
-        dateString,
-        'sets value correctly on picker',
-      );
-    });
-
-    test('supports legacy localstorage value', async function(assert) {
-      let testDate = new Date();
-      let testDateInIsoFormat = testDate.toISOString();
-
-      this.set('testDate', testDateInIsoFormat);
-
-      await render(hbs`<DatePicker
-        @value={{testDate}}
-      />`);
-
-      let elem = find('input');
-
-      let dateString = moment(testDate).format('MMMM D, YYYY');
-
-      assert.equal(
-        elem.value,
-        dateString,
-        'sets value correctly on picker',
-      );
+      assert
+        .dom('input')
+        .hasValue(
+          dateString,
+          'sets value correctly on picker',
+        );
     });
 
     test('sets placeholder on input field', async function(assert) {
-      await render(hbs`<DatePicker
-        @placeholder="Type here"
-      />`);
+      await render(hbs`<DatePicker @placeholder="Type here" />`);
 
-      let elem = find('input');
-
-      assert.equal(
-        elem.getAttribute('placeholder'),
-        'Type here',
-        'sets placeholder correctly on picker',
-      );
+      assert
+        .dom('input')
+        .hasAttribute(
+          'placeholder',
+          'Type here',
+          'sets placeholder correctly on picker',
+        );
     });
 
     test('next month button works', async function(assert) {
@@ -110,19 +89,15 @@ module('Integration | Component | date picker', function(hooks) {
 
       await click('[data-test-selector="next-month-button"]');
 
-      let calendarNav = find('[data-test-selector="calendar-nav"]');
+      const calendarNav = find('[data-test-selector="calendar-nav"]');
 
-      let centerVal = calendarNav.getAttribute('data-test-center-value');
+      const centerVal = calendarNav.getAttribute('data-test-center-value');
 
-      let centerDate = moment(Date.parse(centerVal));
-
-      let currentDate = moment();
-
-      let diff = Math.round(centerDate.diff(currentDate, 'month', true));
+      const centerDate = safeParse(centerVal);
 
       assert.equal(
-        diff,
-        1,
+        centerDate.getMonth(),
+        (new Date()).getMonth() + 1,
         'center has been advanced by one month',
       );
     });
@@ -138,15 +113,11 @@ module('Integration | Component | date picker', function(hooks) {
 
       let centerVal = calendarNav.getAttribute('data-test-center-value');
 
-      let centerDate = moment(Date.parse(centerVal));
-
-      let currentDate = moment();
-
-      let diff = Math.round(centerDate.diff(currentDate, 'month', true));
+      let centerDate = safeParse(centerVal);
 
       assert.equal(
-        diff,
-        -1,
+        centerDate.getMonth(),
+        (new Date()).getMonth() - 1,
         'center has been advanced by one month',
       );
     });
@@ -160,19 +131,24 @@ module('Integration | Component | date picker', function(hooks) {
 
       let calendarNav = find('[data-test-selector="calendar-nav"]');
 
-      await fillIn(monthSelector, 'April');
+      await fillIn(monthSelector, '3');
 
-      assert.equal(
-        monthSelector.value,
-        'April',
-        'month should be selected',
-      );
+      assert
+        .dom('[data-test-selector="month-selector"]')
+        .hasValue('3');
+
+      assert
+        .dom('[data-test-selector="month-selector"] option[value="3"]:checked')
+        .hasText(
+          'April',
+          'month should be selected',
+        );
 
       let centerDateString = calendarNav.getAttribute('data-test-center-value');
-      let centerDate = moment(centerDateString);
+      let centerDate = safeParse(centerDateString);
 
       assert.equal(
-        centerDate.get('month'),
+        centerDate.getMonth(),
         3,
         'correct month should be selected',
       );
@@ -180,10 +156,10 @@ module('Integration | Component | date picker', function(hooks) {
       await fillIn(monthSelector, 'January');
 
       centerDateString = calendarNav.getAttribute('data-test-center-value');
-      centerDate = moment(centerDateString);
+      centerDate = safeParse(centerDateString);
 
       assert.equal(
-        centerDate.get('month'),
+        centerDate.getMonth(),
         0,
         'correct month should be selected',
       );
@@ -194,23 +170,24 @@ module('Integration | Component | date picker', function(hooks) {
 
       await click('[data-test-selector="date-picker-trigger"]');
 
-      let yearSelector = find('[data-test-selector="year-selector"]');
+      let yearSelector = '[data-test-selector="year-selector"]';
 
       let calendarNav = find('[data-test-selector="calendar-nav"]');
 
       await fillIn(yearSelector, '2013');
 
-      assert.equal(
-        yearSelector.value,
-        2013,
-        'year should be selected',
-      );
+      assert
+        .dom(yearSelector)
+        .hasValue(
+          '2013',
+          'year should be selected',
+        );
 
       let centerDateString = calendarNav.getAttribute('data-test-center-value');
-      let centerDate = moment(centerDateString);
+      let centerDate = safeParse(centerDateString);
 
       assert.equal(
-        centerDate.get('year'),
+        centerDate.getFullYear(),
         2013,
         'correct year should be set',
       );
@@ -218,10 +195,10 @@ module('Integration | Component | date picker', function(hooks) {
       await fillIn(yearSelector, 2018);
 
       centerDateString = calendarNav.getAttribute('data-test-center-value');
-      centerDate = moment(centerDateString);
+      centerDate = safeParse(centerDateString);
 
       assert.equal(
-        centerDate.get('year'),
+        centerDate.getFullYear(),
         2018,
         'correct year should be set',
       );
@@ -231,19 +208,17 @@ module('Integration | Component | date picker', function(hooks) {
       let maximum = new Date(2030, 0, 0);
       this.set('maximum', maximum);
 
-      await render(hbs`<DatePicker
-        @maximum={{maximum}}
-      />`);
+      await render(hbs`<DatePicker @maximum={{this.maximum}} />`);
 
       await click('[data-test-selector="date-picker-trigger"]');
 
       let calendarNav = find('[data-test-selector="calendar-nav"]');
       let centerDateString = calendarNav.getAttribute('data-test-center-value');
-      let centerDate = moment(centerDateString);
+      let centerDate = safeParse(centerDateString);
 
       assert.equal(
-        centerDate.get('year'),
-        moment().year(),
+        centerDate.getFullYear(),
+        (new Date()).getFullYear(),
         'correct year should be set',
       );
     });
@@ -252,15 +227,13 @@ module('Integration | Component | date picker', function(hooks) {
       let maximum = new Date(2010, 11, 30);
       this.set('maximum', maximum);
 
-      await render(hbs`<DatePicker
-        @max={{maximum}}
-      />`);
+      await render(hbs`<DatePicker @max={{this.maximum}} />`);
 
       await click('[data-test-selector="date-picker-trigger"]');
 
       let calendarNav = find('[data-test-selector="calendar-nav"]');
       let centerDateString = calendarNav.getAttribute('data-test-center-value');
-      let centerDate = new Date(Date.parse(centerDateString));
+      let centerDate = safeParse(centerDateString);
 
       assert.equal(
         centerDate.getFullYear(),
@@ -271,21 +244,19 @@ module('Integration | Component | date picker', function(hooks) {
 
     test('correctly initializes center value when explicitly set', async function(assert) {
       let dateInThePast = '1979-06-01';
-      let explicitCenter = new Date(dateInThePast);
+      let explicitCenter = safeParse(dateInThePast);
       this.set('explicitCenter', explicitCenter);
 
-      await render(hbs`<DatePicker
-        @explicitCenter={{explicitCenter}}
-      />`);
+      await render(hbs`<DatePicker @explicitCenter={{this.explicitCenter}} />`);
 
       await click('[data-test-selector="date-picker-trigger"]');
 
       let calendarNav = find('[data-test-selector="calendar-nav"]');
       let centerDateString = calendarNav.getAttribute('data-test-center-value');
-      let centerDate = moment(centerDateString);
+      let centerDate = safeParse(centerDateString);
 
       assert.equal(
-        centerDate.get('year'),
+        centerDate.getFullYear(),
         1979,
         'correct year should be set',
       );
@@ -293,13 +264,13 @@ module('Integration | Component | date picker', function(hooks) {
 
     test('can disable the trigger field', async function(assert) {
       await render(hbs`<DatePicker
-        @max={{maximum}}
+        @max={{this.maximum}}
         @isDisabled={{true}}
       />`);
 
-      let field = find('[data-test-selector="date-picker-trigger"]');
-
-      assert.ok(field.disabled);
+      assert
+        .dom('[data-test-selector="date-picker-trigger"]')
+        .isDisabled();
     });
 
     test('next month button is disabled when max is reached', async function(assert) {
@@ -314,8 +285,8 @@ module('Integration | Component | date picker', function(hooks) {
       });
 
       await render(hbs`<DatePicker
-        @explicitCenter={{center}}
-        @max={{max}}
+        @explicitCenter={{this.center}}
+        @max={{this.max}}
       />`);
 
       await click('[data-test-selector="date-picker-trigger"]');
@@ -343,8 +314,8 @@ module('Integration | Component | date picker', function(hooks) {
       });
 
       await render(hbs`<DatePicker
-        @explicitCenter={{center}}
-        @min={{min}}
+        @explicitCenter={{this.center}}
+        @min={{this.min}}
       />`);
 
       await click('[data-test-selector="date-picker-trigger"]');
@@ -369,7 +340,7 @@ module('Integration | Component | date picker', function(hooks) {
     });
 
     test('sets min and max on input field', async function(assert) {
-      let min = moment().subtract(5, 'years').toDate();
+      let min = subDate(new Date(), { years: 5 });
       let max = new Date();
 
       this.setProperties({
@@ -425,10 +396,7 @@ module('Integration | Component | date picker', function(hooks) {
 
       await fillIn('input', newDate);
 
-      let expectedDateValue = moment(newDate, 'YYYY-MM-DD')
-        .startOf('day')
-        .utcOffset(0)
-        .toDate();
+      let expectedDateValue = startOfDay(safeParse(newDate));
 
       assert
         .dom('input')
@@ -458,7 +426,7 @@ module('Integration | Component | date picker', function(hooks) {
       assert
         .dom('input')
         .hasValue(
-          moment(testDate).format('YYYY-MM-DD'),
+          formatDate(testDate, 'yyyy-MM-dd'),
           'hydrates the value correctly',
         );
     });
@@ -503,7 +471,7 @@ module('Integration | Component | date picker', function(hooks) {
       assert
         .dom('input')
         .hasValue(
-          moment(testDate).format('YYYY-MM-DD'),
+          formatDate(testDate, 'yyyy-MM-dd'),
           'hydrates the value correctly',
         );
 

@@ -1,6 +1,6 @@
 <input
   type="date"
-  value={{moment-format @rawValue "YYYY-MM-DD" allowEmpty=true}}
+  value={{compute this.transformValue @rawValue}}
   ...attributes
   {{on "change" (fn this.publishChoice @onChange)}}
 >
