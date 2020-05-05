@@ -1,122 +1,103 @@
-import Component from '@ember/component';
-import { computed } from '@ember/object';
-import { readOnly } from '@ember/object/computed';
+import Component from '@glimmer/component';
+
 import { inject as service } from '@ember/service';
+
 import moment from 'moment';
-import layout from '../templates/components/date-picker';
 
-const selectableMonthOptions = [
-  'January',
-  'February',
-  'March',
-  'April',
-  'May',
-  'June',
-  'July',
-  'August',
-  'September',
-  'October',
-  'November',
-  'December',
-];
+export default class DatePicker extends Component {
+  @service datePicker;
 
-export default Component.extend({
-  layout,
+  inputClass = 'Input u-sizeFull p1 mt1';
 
-  attributeBindings: [
-    'data-test-selector',
-  ],
+  selectableMonthOptions = [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
+  ];
 
-  inputClass: 'Input u-sizeFull p1 mt1',
-
-  selectableMonthOptions,
-
-  init() {
-    this._super(...arguments);
-
-    let {
-      explicitCenter,
-      value,
+  get castValue() {
+    const {
+      args: {
+        value,
+      },
     } = this;
 
-    if (!explicitCenter) {
-      return;
+    return value && moment(value);
+  }
+
+  get center() {
+    const {
+      _center,
+      castValue,
+      args: {
+        explicitCenter,
+        max,
+      },
+    } = this;
+
+    if (_center) {
+      return _center;
     }
 
-    if (explicitCenter && value) {
-      this.set('center', value);
-    } else {
-      this.set('center', explicitCenter);
-    }
-  },
-
-  datePicker: service(),
-
-  isNativePickerDisplayed: readOnly('datePicker.isNativePickerDisplayed'),
-
-  castedValue: computed('value', function() {
-    let { value } = this;
-
-    if (!value) {
-      return null;
+    if (explicitCenter) {
+      return explicitCenter || castValue;
     }
 
-    let { isNativePickerDisplayed } = this;
-    let casted = moment(value, 'YYYY-MM-DD');
+    if (max && !moment().isBefore(moment(max))) {
+      return max;
+    }
 
-    // Native input wants YYYY-MM-DD, desktop fancy picker wants a date object
-    return isNativePickerDisplayed ? casted.format('YYYY-MM-DD') : casted.toDate();
-  }),
+    return null;
+  }
 
-  center: computed('max', {
-    get() {
-      let { max } = this;
+  set center(newCenter) {
+    this._center = newCenter;
 
-      if (!moment().isBefore(moment(max))) {
-        return max;
-      } else {
-        return null;
-      }
-    },
-    set(_, v) {
-      return v;
-    },
-  }),
+    return newCenter;
+  }
 
-  maximum: computed('max', {
-    get() {
-      let defaultValue = moment().add(1, 'year').startOf('day').toDate();
-      let val = this.max || defaultValue;
-
-      return val;
-    },
-    set(_, v) {
-      return v;
-    },
-  }),
-
-  minimum: computed('min', function() {
-    let defaultValue = moment().subtract(100, 'years').startOf('day').toDate();
-    let val = this.min || defaultValue;
+  get maximum() {
+    const defaultValue = moment().add(1, 'year').startOf('day').toDate();
+    const val = this.args.max || defaultValue;
 
     return val;
-  }),
+  }
 
-  minYear: computed('minimum', function() {
+  set maximum(v) {
+    return v;
+  }
+
+  get minimum() {
+    const defaultValue = moment().subtract(100, 'years').startOf('day').toDate();
+    const val = this.args.min || defaultValue;
+
+    return val;
+  }
+
+  get minYear() {
     return this.minimum.getFullYear();
-  }),
+  }
 
-  maxYear: computed('maximum', function() {
+  get maxYear() {
     return this.maximum.getFullYear();
-  }),
+  }
 
-  selectableYearOptions: computed('minYear', 'maxYear', function() {
-    let {
+  get selectableYearOptions() {
+    const {
       minYear,
       maxYear,
     } = this;
 
-    let selectableYears = [];
+    const selectableYears = [];
 
     for (let i = minYear; i <= maxYear; i++) {
       // values must be strings for equality to work correctly in the template
@@ -124,37 +105,16 @@ export default Component.extend({
     }
 
     return selectableYears.reverse();
-  }),
+  }
 
-  actions: {
-    // http://www.ember-power-calendar.com/cookbook/nav-select
-    changeCenter(unit, calendar, { target: { value } }) {
-      let newCenter = moment(calendar.center).clone()[unit](value);
+  navigateCenter(unit, calendar, { target: { value } }) {
+    const newCenter = moment(calendar.center).clone()[unit](value);
 
-      calendar.actions.changeCenter(newCenter);
-    },
+    calendar.actions.changeCenter(newCenter);
+  }
 
-    setValueAndValidate(newDate) {
-      // HTML5 input type="date" returns a "YYYY-MM-DD" string
-      // and Ember is expecting a Date
-
-      // pickadate doesn't know anything about time zones
-      // https://github.com/amsul/pickadate.js/issues/875
-      let date = moment(newDate).format('YYYY-MM-DD');
-
-      // TODO Remove this once we're using fullscreen-card-renderer everywhere
-      let onChange = this.get('on-change');
-
-      if (onChange) {
-        onChange(date);
-      } else {
-        let atMidnightUtc = moment(date)
-          .startOf('day')
-          .utcOffset(0)
-          .toDate();
-
-        this.set('value', atMidnightUtc);
-      }
-    },
-  },
-});
+  // Unwraps the object we get back
+  publishChoice(action, { date }) {
+    action(date);
+  }
+}

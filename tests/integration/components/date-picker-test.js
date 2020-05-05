@@ -29,19 +29,23 @@ module('Integration | Component | date picker', function(hooks) {
 
       this.set('testDate', testDate);
 
-      await render(hbs`<DatePicker
-        @value={{testDate}}
-      />`);
+      this.onChange = (newDate) => {
+        this.set('testDate', newDate);
+      };
 
-      let elem = find('input');
+      await render(hbs`
+        <DatePicker
+          @value={{this.testDate}}
+          @onChange={{this.onChange}}
+        />
+      `);
 
-      let dateString = moment(testDate).format('MMMM D, YYYY');
-
-      assert.equal(
-        elem.value,
-        dateString,
-        'sets value correctly on picker'
-      );
+      assert
+        .dom('input')
+        .hasValue(
+          moment(testDate).format('MMMM D, YYYY'),
+          'sets value correctly on picker',
+        );
     });
 
     test('supports legacy date object value', async function(assert) {
@@ -60,7 +64,7 @@ module('Integration | Component | date picker', function(hooks) {
       assert.equal(
         elem.value,
         dateString,
-        'sets value correctly on picker'
+        'sets value correctly on picker',
       );
     });
 
@@ -81,7 +85,7 @@ module('Integration | Component | date picker', function(hooks) {
       assert.equal(
         elem.value,
         dateString,
-        'sets value correctly on picker'
+        'sets value correctly on picker',
       );
     });
 
@@ -95,7 +99,7 @@ module('Integration | Component | date picker', function(hooks) {
       assert.equal(
         elem.getAttribute('placeholder'),
         'Type here',
-        'sets placeholder correctly on picker'
+        'sets placeholder correctly on picker',
       );
     });
 
@@ -119,7 +123,7 @@ module('Integration | Component | date picker', function(hooks) {
       assert.equal(
         diff,
         1,
-        'center has been advanced by one month'
+        'center has been advanced by one month',
       );
     });
 
@@ -143,7 +147,7 @@ module('Integration | Component | date picker', function(hooks) {
       assert.equal(
         diff,
         -1,
-        'center has been advanced by one month'
+        'center has been advanced by one month',
       );
     });
 
@@ -161,7 +165,7 @@ module('Integration | Component | date picker', function(hooks) {
       assert.equal(
         monthSelector.value,
         'April',
-        'month should be selected'
+        'month should be selected',
       );
 
       let centerDateString = calendarNav.getAttribute('data-test-center-value');
@@ -170,7 +174,7 @@ module('Integration | Component | date picker', function(hooks) {
       assert.equal(
         centerDate.get('month'),
         3,
-        'correct month should be selected'
+        'correct month should be selected',
       );
 
       await fillIn(monthSelector, 'January');
@@ -181,7 +185,7 @@ module('Integration | Component | date picker', function(hooks) {
       assert.equal(
         centerDate.get('month'),
         0,
-        'correct month should be selected'
+        'correct month should be selected',
       );
     });
 
@@ -199,7 +203,7 @@ module('Integration | Component | date picker', function(hooks) {
       assert.equal(
         yearSelector.value,
         2013,
-        'year should be selected'
+        'year should be selected',
       );
 
       let centerDateString = calendarNav.getAttribute('data-test-center-value');
@@ -208,7 +212,7 @@ module('Integration | Component | date picker', function(hooks) {
       assert.equal(
         centerDate.get('year'),
         2013,
-        'correct year should be set'
+        'correct year should be set',
       );
 
       await fillIn(yearSelector, 2018);
@@ -219,7 +223,7 @@ module('Integration | Component | date picker', function(hooks) {
       assert.equal(
         centerDate.get('year'),
         2018,
-        'correct year should be set'
+        'correct year should be set',
       );
     });
 
@@ -240,7 +244,7 @@ module('Integration | Component | date picker', function(hooks) {
       assert.equal(
         centerDate.get('year'),
         moment().year(),
-        'correct year should be set'
+        'correct year should be set',
       );
     });
 
@@ -261,7 +265,7 @@ module('Integration | Component | date picker', function(hooks) {
       assert.equal(
         centerDate.getFullYear(),
         2010,
-        'correct year should be set'
+        'correct year should be set',
       );
     });
 
@@ -283,7 +287,7 @@ module('Integration | Component | date picker', function(hooks) {
       assert.equal(
         centerDate.get('year'),
         1979,
-        'correct year should be set'
+        'correct year should be set',
       );
     });
 
@@ -373,22 +377,25 @@ module('Integration | Component | date picker', function(hooks) {
         max,
       });
 
-      await render(hbs`<DatePicker
-        @min={{min}}
-        @max={{max}}
-      />`);
+      await render(hbs`
+        <DatePicker
+          @min={{this.min}}
+          @max={{this.max}}
+        />
+      `);
 
-      let elem = find('input');
-
-      assert.ok(
-        /^\d{4}-\d{2}-\d{2}$/.test(elem.getAttribute('min')),
-        'sets minimum correctly on picker'
-      );
-
-      assert.ok(
-        /^\d{4}-\d{2}-\d{2}$/.test(elem.getAttribute('max')),
-        'sets maximum correctly on picker'
-      );
+      assert
+        .dom('input')
+        .hasAttribute(
+          'min',
+          /^\d{4}-\d{2}-\d{2}$/,
+          'sets minimum correctly on picker',
+        )
+        .hasAttribute(
+          'max',
+          /^\d{4}-\d{2}-\d{2}$/,
+          'sets maximum correctly on picker',
+        );
     });
 
     test('sets value on input field', async function(assert) {
@@ -397,89 +404,75 @@ module('Integration | Component | date picker', function(hooks) {
 
       this.set('testDate', initialDate);
 
-      await render(hbs`<DatePicker
-        @value={{testDate}}
-      />`);
-
-      let currentValue = find('input').value;
-
-      assert.equal(
-        currentValue,
-        moment(initialDate).format('YYYY-MM-DD'),
-        'hydrates the value correctly'
+      this.set(
+        'onChange',
+        (newValue) => this.set('testDate', newValue),
       );
 
-      let elem = find('input');
+      await render(hbs`
+        <DatePicker
+          @value={{this.testDate}}
+          @onChange={{this.onChange}}
+        />
+      `);
 
-      await fillIn(elem, newDate);
+      assert
+        .dom('input')
+        .hasValue(
+          initialDate,
+          'hydrates the value correctly',
+        );
+
+      await fillIn('input', newDate);
 
       let expectedDateValue = moment(newDate, 'YYYY-MM-DD')
         .startOf('day')
         .utcOffset(0)
         .toDate();
 
-      assert.equal(
-        elem.value,
-        newDate,
-        'sets date correctly on mobile picker input field'
-      );
+      assert
+        .dom('input')
+        .hasValue(
+          newDate,
+          'sets date correctly on mobile picker input field',
+        );
 
       assert.deepEqual(
-        this.get('testDate'),
+        this.testDate,
         expectedDateValue,
-        'sets value correctly'
+        'sets value correctly',
       );
     });
 
-    test('supports legacy date object value', async function(assert) {
+    test('supports date object value', async function(assert) {
       let testDate = new Date();
 
       this.set('testDate', testDate);
 
-      await render(hbs`<DatePicker
-        @value={{testDate}}
-      />`);
+      await render(hbs`
+        <DatePicker
+          @value={{this.testDate}}
+        />
+      `);
 
-      let currentValue = find('input').value;
-
-      assert.equal(
-        currentValue,
-        moment(testDate).format('YYYY-MM-DD'),
-        'hydrates the value correctly'
-      );
-    });
-
-    test('supports legacy localstorage value', async function(assert) {
-      let testDate = new Date();
-      let testDateInIsoFormat = testDate.toISOString();
-
-      this.set('testDate', testDateInIsoFormat);
-
-      await render(hbs`<DatePicker
-        @value={{testDate}}
-      />`);
-
-      let currentValue = find('input').value;
-
-      assert.equal(
-        currentValue,
-        moment(testDate).format('YYYY-MM-DD'),
-        'hydrates the value correctly'
-      );
+      assert
+        .dom('input')
+        .hasValue(
+          moment(testDate).format('YYYY-MM-DD'),
+          'hydrates the value correctly',
+        );
     });
 
     test('sets placeholder on input field', async function(assert) {
-      await render(hbs`<DatePicker
-        @placeholder="Type here"
-      />`);
+      await render(hbs`<DatePicker @placeholder="Type here" />`);
 
-      let elem = find('input');
-
-      assert.equal(
-        elem.getAttribute('placeholder'),
-        'Type here',
-        'sets placeholder correctly on picker'
-      );
+      assert
+        .dom('input')
+        .hasAttribute(
+          'placeholder',
+          'Type here',
+          'sets placeholder correctly on picker',
+        );
     });
 
     test('setting a value when a handler has been set', async function(assert) {
@@ -493,44 +486,48 @@ module('Integration | Component | date picker', function(hooks) {
       this.set('onChange', (value) => {
         assert.deepEqual(
           value,
-          requestedDate,
-          'passes new value to handler'
+          new Date(2016, 9, 1),
+          'passes new value to handler',
         );
+
+        this.set('testDate', value);
       });
 
-      await render(hbs`<DatePicker
-        @value={{testDate}}
-        @on-change={{action onChange}}
-      />`);
+      await render(hbs`
+        <DatePicker
+          @value={{this.testDate}}
+          @onChange={{this.onChange}}
+        />
+      `);
 
-      let elem = find('input');
+      assert
+        .dom('input')
+        .hasValue(
+          moment(testDate).format('YYYY-MM-DD'),
+          'hydrates the value correctly',
+        );
 
-      let currentValue = elem.value;
+      await fillIn('input', requestedDate);
 
-      assert.equal(
-        currentValue,
-        moment(testDate).format('YYYY-MM-DD'),
-        'hydrates the value correctly'
-      );
-
-      await fillIn(elem, requestedDate);
-
-      assert.equal(
-        elem.value,
-        requestedDate,
-        'sets date correctly on mobile picker input field'
-      );
+      assert
+        .dom('input')
+        .hasValue(
+          requestedDate,
+          'sets date correctly on mobile picker input field',
+        );
     });
 
     test('can disable the input', async function(assert) {
-      await render(hbs`<DatePicker
-        @max={{maximum}}
-        @isDisabled={{true}}
-      />`);
+      await render(hbs`
+        <DatePicker
+          @max={{this.maximum}}
+          @isDisabled={{true}}
+        />
+      `);
 
-      let field = find('[data-test-selector="input-field"]');
-
-      assert.ok(field.disabled);
+      assert
+        .dom('[data-test-selector="input-field"]')
+        .isDisabled();
     });
   });
 });

@@ -1,22 +1,25 @@
 import Controller from '@ember/controller';
-import { computed } from '@ember/object';
 
-export default Controller.extend({
-  queryParams: [
-    'isNativePickerDisplayed',
-  ],
+import { action } from '@ember/object';
 
-  minimum: computed(function() {
-    return new Date(2010, 0, 1);
-  }),
+import { inject as service } from '@ember/service';
 
-  maximum: computed(function() {
-    return new Date(2017, 0, 1);
-  }),
+export default class ApplicationController extends Controller {
+  @service datePicker;
 
-  actions: {
-    onChange(newValue) {
-      this.set('currentValue', newValue);
-    },
-  },
-});
+  currentValue = null;
+
+  minimum = new Date(2010, 0, 1);
+
+  maximum = new Date(2017, 0, 1);
+
+  @action
+  onChange(newValue) {
+    this.set('currentValue', newValue);
+  }
+
+  @action
+  toggleNative() {
+    this.datePicker.toggleProperty('isNativePickerDisplayed');
+  }
+}
