@@ -7,8 +7,8 @@
       disabled={{@isDisabled}}
       placeholder={{@placeholder}}
       class={{this.inputClass}}
-      min={{moment-format this.minimum "YYYY-MM-DD" timeZone="UTC"}}
-      max={{moment-format this.maximum "YYYY-MM-DD" timeZone="UTC"}}
+      min={{compute this.formatDate this.minimum "yyyy-MM-dd"}}
+      max={{compute this.formatDate this.maximum "yyyy-MM-dd"}}
       required={{@required}}
       data-test-selector="input-field"
     />
@@ -25,7 +25,7 @@
           type="text"
           name={{@name}}
           placeholder={{@placeholder}}
-          value={{moment-format Picker.selected "MMMM D, YYYY" allowEmpty=true}}
+          value={{compute this.formatDate Picker.selected "MMMM d, yyyy"}}
           class={{this.inputClass}}
           disabled={{@isDisabled}}
           readonly
@@ -40,34 +40,34 @@
         <nav
           class="ember-power-calendar-nav"
           data-test-selector="calendar-nav"
-          data-test-center-value={{moment-format Picker.center "YYYY-MM-DD"}}
+          data-test-center-value={{compute this.formatDate Picker.center "yyyy-MM-dd"}}
         >
           <button
             class="ember-power-calendar-nav-control ember-power-calendar-nav-control--previous"
             type="button"
             data-test-selector="previous-month-button"
-            disabled={{and @min (is-same-or-before Picker.center @min precision="month")}}
+            disabled={{and this.min (compute this.isSameMonthOrBefore Picker.center this.min)}}
             {{on "click" (fn Picker.actions.moveCenter -1 "month" Picker)}}
           >
             ◀
           </button>
 
           <div class="ember-power-calendar-dropdowns-holder">
-            {{#let (moment-format Picker.center "MMMM") as |currentMonth|}}
+            {{#let (compute this.formatDate Picker.center "MMMM") as |currentMonth|}}
               <select
                 class="ember-power-calendar-nav-dropdown"
                 data-test-selector="month-selector"
                 {{on "change" (fn this.navigateCenter "month" Picker)}}
               >
-                {{#each this.selectableMonthOptions as |opt|}}
-                  <option selected={{eq opt currentMonth}} value={{opt}}>
+                {{#each this.selectableMonthOptions as |opt idx|}}
+                  <option selected={{eq opt currentMonth}} value={{idx}}>
                     {{opt}}
                   </option>
                 {{/each}}
               </select>
             {{/let}}
 
-            {{#let (moment-format Picker.center "YYYY") as |currentYear|}}
+            {{#let (compute this.formatDate Picker.center "yyyy") as |currentYear|}}
               <select
                 class="ember-power-calendar-nav-dropdown"
                 data-test-selector="year-selector"
@@ -85,7 +85,7 @@
           <button
             class="ember-power-calendar-nav-control ember-power-calendar-nav-control--next"
             type="button"
-            disabled={{and @max (is-same-or-after Picker.center @max precision="month")}}
+            disabled={{and this.max (compute this.isSameMonthOrAfter Picker.center this.max)}}
             data-test-selector="next-month-button"
             {{on "click" (fn Picker.actions.moveCenter 1 "month" Picker)}}
           >

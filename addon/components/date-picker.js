@@ -2,7 +2,17 @@ import Component from '@glimmer/component';
 
 import { inject as service } from '@ember/service';
 
-import moment from 'moment';
+import addToDate from 'date-fns/add';
+import formatDate from 'date-fns/format';
+import isAfter from 'date-fns/isAfter';
+import isBefore from 'date-fns/isBefore';
+import isSameMonth from 'date-fns/isSameMonth';
+import setMonth from 'date-fns/setMonth';
+import setYear from 'date-fns/setYear';
+import startOfDay from 'date-fns/startOfDay';
+import subFromDate from 'date-fns/sub';
+
+import safeParse from '@precision-nutrition/date-picker/-private/safe-parse';
 
 export default class DatePicker extends Component {
   @service datePicker;
@@ -25,22 +35,25 @@ export default class DatePicker extends Component {
   ];
 
   get castValue() {
-    const {
-      args: {
-        value,
-      },
-    } = this;
-
-    return value && moment(value);
+    return safeParse(this.args.value);
   }
+
+  get max() {
+    return safeParse(this.args.max);
+  }
+
+  get min() {
+    return safeParse(this.args.min);
+  }
+
 
   get center() {
     const {
       _center,
       castValue,
+      max,
       args: {
         explicitCenter,
-        max,
       },
     } = this;
 
@@ -52,7 +65,7 @@ export default class DatePicker extends Component {
       return explicitCenter || castValue;
     }
 
-    if (max && !moment().isBefore(moment(max))) {
+    if (max && isBefore(max, new Date())) {
       return max;
     }
 
@@ -65,22 +78,28 @@ export default class DatePicker extends Component {
     return newCenter;
   }
 
-  get maximum() {
-    const defaultValue = moment().add(1, 'year').startOf('day').toDate();
-    const val = this.args.max || defaultValue;
+  get defaultMaximum() {
+    const today = new Date();
 
-    return val;
+    return startOfDay(addToDate(today, { years: 1 }));
+  }
+
+  get maximum() {
+    return this.max || this.defaultMaximum;
   }
 
   set maximum(v) {
     return v;
   }
 
-  get minimum() {
-    const defaultValue = moment().subtract(100, 'years').startOf('day').toDate();
-    const val = this.args.min || defaultValue;
+  get defaultMinimum() {
+    const today = new Date();
 
-    return val;
+    return startOfDay(subFromDate(today, { years: '100' }));
+  }
+
+  get minimum() {
+    return this.min || this.defaultMinimum;
   }
 
   get minYear() {
@@ -108,7 +127,14 @@ export default class DatePicker extends Component {
   }
 
   navigateCenter(unit, calendar, { target: { value } }) {
-    const newCenter = moment(calendar.center).clone()[unit](value);
+    const currentCenter = calendar.center;
+    let newCenter;
+
+    if (unit === 'month') {
+      newCenter = setMonth(currentCenter, value);
+    } else {
+      newCenter = setYear(currentCenter, value);
+    }
 
     calendar.actions.changeCenter(newCenter);
   }
@@ -116,5 +142,17 @@ export default class DatePicker extends Component {
   // Unwraps the object we get back
   publishChoice(action, { date }) {
     action(date);
+  }
+
+  formatDate(date, formatString) {
+    return date && formatDate(date, formatString);
+  }
+
+  isSameMonthOrBefore(d1, d2) {
+    return isBefore(d1, d2) || isSameMonth(d1, d2);
+  }
+
+  isSameMonthOrAfter(d1, d2) {
+    return isAfter(d1, d2) || isSameMonth(d1, d2);
   }
 }
