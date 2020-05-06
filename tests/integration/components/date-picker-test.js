@@ -20,13 +20,17 @@ module('Integration | Component | date picker', function(hooks) {
     });
 
     test('custom classes are applied', async function(assert) {
-      await render(hbs`<DatePicker />`);
+      await render(hbs`<DatePicker @inputClass="fart-fart-class" />`);
 
       await click('[data-test-selector="date-picker-trigger"]');
 
       assert
         .dom('[data-test-selector="date-picker-content"]')
         .hasClass('DatePicker');
+
+      assert
+        .dom('[data-test-selector="date-picker-trigger"]')
+        .hasClass('fart-fart-class');
     });
 
     test('sets value on input field', async function(assert) {
@@ -515,6 +519,12 @@ module('Integration | Component | date picker', function(hooks) {
       assert
         .dom('[data-test-selector="input-field"]')
         .isDisabled();
+    });
+
+    test('can apply class to input', async function(assert) {
+      await render(hbs`<DatePicker @inputClass="fart-fart-class" />`);
+
+      assert.dom('[data-test-selector="input-field"]').hasClass('fart-fart-class');
     });
   });
 });

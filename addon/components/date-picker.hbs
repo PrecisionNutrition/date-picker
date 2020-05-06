@@ -6,7 +6,7 @@
       name={{@name}}
       disabled={{@isDisabled}}
       placeholder={{@placeholder}}
-      class={{this.inputClass}}
+      class={{@inputClass}}
       min={{compute this.formatDate this.minimum "yyyy-MM-dd"}}
       max={{compute this.formatDate this.maximum "yyyy-MM-dd"}}
       required={{@required}}
@@ -26,7 +26,7 @@
           name={{@name}}
           placeholder={{@placeholder}}
           value={{compute this.formatDate Picker.selected "MMMM d, yyyy"}}
-          class={{this.inputClass}}
+          class={{@inputClass}}
           disabled={{@isDisabled}}
           readonly
           data-test-selector="date-picker-trigger"
