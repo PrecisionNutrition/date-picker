@@ -53,6 +53,25 @@ module('Integration | Component | date picker', function(hooks) {
         );
     });
 
+    test('value is serialized with JSON', async function(assert) {
+      const testDate = (new Date(2020, 4, 22)).toJSON();
+
+      this.testDate = testDate;
+
+      await render(hbs`
+        <DatePicker
+          @value={{this.testDate}}
+        />
+      `);
+
+      assert
+        .dom('input')
+        .hasValue(
+          formatDate(new Date(2020, 4, 22), 'MMMM d, yyyy'),
+          'sets value correctly on picker',
+        );
+    });
+
     test('supports date object value', async function(assert) {
       let testDate = new Date();
 
