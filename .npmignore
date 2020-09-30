@@ -4,6 +4,7 @@
 
 # dependencies
 /bower_components/
+/.nix-node/
 
 # misc
 /.bowerrc
