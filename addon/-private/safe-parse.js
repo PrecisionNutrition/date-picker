@@ -10,6 +10,10 @@ export default function safeParse(value) {
     return value;
   } else if (value.match(RFC3339_REGEXP)) {
     return parseJSON(value);
+  } else if (value.endsWith('UTC')) {
+    const correctedValue = value.split(' ').slice(0, 2).join('T') + '.000Z';
+
+    return parseJSON(correctedValue);
   } else {
     return parseDate(value, 'yyyy-MM-dd', new Date());
   }

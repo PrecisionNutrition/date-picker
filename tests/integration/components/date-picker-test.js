@@ -93,6 +93,23 @@ module('Integration | Component | date picker', function(hooks) {
         );
     });
 
+    test('yet another date format', async function(assert) {
+      const testDate = '1940-07-07 23:23:23 UTC';
+
+      this.set('testDate', testDate);
+
+      await render(hbs`<DatePicker @value={{this.testDate}} />`);
+
+      let dateString = formatDate(new Date(1940, 6, 7, 23, 23, 23), 'MMMM d, yyyy');
+
+      assert
+        .dom('input')
+        .hasValue(
+          dateString,
+          'sets value correctly on picker',
+        );
+    });
+
     test('sets placeholder on input field', async function(assert) {
       await render(hbs`<DatePicker @placeholder="Type here" />`);
 
