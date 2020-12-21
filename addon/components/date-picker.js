@@ -13,7 +13,6 @@ import startOfDay from 'date-fns/startOfDay';
 import subFromDate from 'date-fns/sub';
 
 import safeParse from '@precision-nutrition/date-picker/-private/safe-parse';
-
 export default class DatePicker extends Component {
   @service datePicker;
 
@@ -45,7 +44,6 @@ export default class DatePicker extends Component {
   get min() {
     return safeParse(this.args.min);
   }
-
 
   get center() {
     const {
