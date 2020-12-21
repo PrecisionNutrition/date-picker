@@ -97,5 +97,8 @@
     "**/*.hbs": [
       "ember-template-lint . --quiet --fix"
     ]
+  },
+  "resolutions": {
+    "ember-truth-helpers": "^2.1.0"
   }
 }
