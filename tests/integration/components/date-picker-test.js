@@ -105,10 +105,12 @@ module('Integration | Component | date picker', function (hooks) {
     });
 
     test('next month button works', async function (assert) {
-      await render(hbs`<DatePicker />`);
+      const testDate = new Date(2020, 4, 22);
+      this.set('testDate', testDate.toJSON());
+
+      await render(hbs`<DatePicker @value={{this.testDate}} />`);
 
       await click('[data-test-selector="date-picker-trigger"]');
-
       await click('[data-test-selector="next-month-button"]');
 
       const calendarNav = find('[data-test-selector="calendar-nav"]');
@@ -119,7 +121,7 @@ module('Integration | Component | date picker', function (hooks) {
 
       assert.equal(
         centerDate.getMonth(),
-        new Date().getMonth() + 1,
+        testDate.getMonth() + 1,
         'center has been advanced by one month'
       );
     });
