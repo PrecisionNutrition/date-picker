@@ -1776,6 +1776,11 @@
     "@nodelib/fs.scandir" "2.1.3"
     fastq "^1.6.0"
 
+"@precision-nutrition/prettier-config@^1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@precision-nutrition/prettier-config/-/prettier-config-1.1.0.tgz#26dde94fc3bb44432f6642087eb4ba1101cd2a37"
+  integrity sha512-COWKjS1GYyjPEuRNXKipTvEYMpRO+IUH27apdTM0kjHHKmwyUx0P62OcEp0PWRUURQ2kEH4Aeau1mRRjwMH8QQ==
+
 "@simple-dom/interface@^1.4.0":
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/@simple-dom/interface/-/interface-1.4.0.tgz#e8feea579232017f89b0138e2726facda6fbb71f"
