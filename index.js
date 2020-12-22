@@ -6,7 +6,7 @@ module.exports = {
   contentFor(type, config) {
     // https://github.com/cibernox/ember-power-select/issues/145#issuecomment-170012836
     if (type === 'body-footer') {
-      let emberPowerDatepicker = this.addons.filter(function(addon) {
+      let emberPowerDatepicker = this.addons.filter(function (addon) {
         return addon.name === 'ember-power-datepicker';
       })[0];
 

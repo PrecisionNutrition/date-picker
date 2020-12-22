@@ -10,19 +10,14 @@ module.exports = {
       legacyDecorators: true,
     },
   },
-  plugins: [
-    'ember',
-  ],
-  extends: [
-    'eslint:recommended',
-    'plugin:ember/recommended',
-    '@precision-nutrition',
-  ],
+  plugins: ['ember'],
+  extends: ['eslint:recommended', 'plugin:ember/recommended', 'plugin:prettier/recommended'],
   env: {
     browser: true,
   },
   rules: {
     'ember/no-jquery': 'error',
+    'prettier/prettier': 'error',
   },
   overrides: [
     // node files
@@ -37,12 +32,7 @@ module.exports = {
         'config/**/*.js',
         'tests/dummy/config/**/*.js',
       ],
-      excludedFiles: [
-        'addon/**',
-        'addon-test-support/**',
-        'app/**',
-        'tests/dummy/app/**',
-      ],
+      excludedFiles: ['addon/**', 'addon-test-support/**', 'app/**', 'tests/dummy/app/**'],
       parserOptions: {
         sourceType: 'script',
       },

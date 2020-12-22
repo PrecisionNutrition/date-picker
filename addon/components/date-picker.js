@@ -46,15 +46,12 @@ export default class DatePicker extends Component {
     return safeParse(this.args.min);
   }
 
-
   get center() {
     const {
       _center,
       castValue,
       max,
-      args: {
-        explicitCenter,
-      },
+      args: { explicitCenter },
     } = this;
 
     if (_center) {
@@ -111,10 +108,7 @@ export default class DatePicker extends Component {
   }
 
   get selectableYearOptions() {
-    const {
-      minYear,
-      maxYear,
-    } = this;
+    const { minYear, maxYear } = this;
 
     const selectableYears = [];
 
