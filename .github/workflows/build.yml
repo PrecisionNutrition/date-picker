@@ -1,0 +1,178 @@
+name: Build and test
+on:
+  push:
+    branches-ignore:
+      - staging.tmp
+
+jobs:
+  install-dependencies:
+    if: "!contains(github.event.head_commit.message, 'skip ci')"
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '12'
+
+      - name: Cache yarn and node_modules
+        uses: actions/cache@v2
+        with:
+          path: |
+            node_modules
+          key: ${{ runner.os }}-dependencies-${{ hashFiles('yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-dependencies-
+
+      - name: Install dependencies
+        run: yarn
+
+  lint:
+    needs: install-dependencies
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/cache@v2
+        with:
+          path: |
+            node_modules
+          key: ${{ runner.os }}-dependencies-${{ hashFiles('yarn.lock') }}
+
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '12'
+
+      - name: Run lint
+        run: yarn lint
+
+  default-tests:
+    needs: install-dependencies
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/cache@v2
+        with:
+          path: |
+            node_modules
+          key: ${{ runner.os }}-dependencies-${{ hashFiles('yarn.lock') }}
+
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '12'
+
+      - name: Run default tests
+        run: yarn test:ember
+
+  release-tests:
+    needs: install-dependencies
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/cache@v2
+        with:
+          path: |
+            node_modules
+          key: ${{ runner.os }}-dependencies-${{ hashFiles('yarn.lock') }}
+
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '12'
+
+      - name: Run release tests
+        run: yarn ember try:one ember-release --skip-cleanup
+
+  beta-tests:
+    needs: install-dependencies
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/cache@v2
+        with:
+          path: |
+            node_modules
+          key: ${{ runner.os }}-dependencies-${{ hashFiles('yarn.lock') }}
+
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '12'
+
+      - name: Run beta tests
+        run: yarn ember try:one ember-beta --skip-cleanup
+
+  canary-tests:
+    needs: install-dependencies
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      # Restore cached dependencies
+      - uses: actions/cache@v2
+        with:
+          path: |
+            node_modules
+          key: ${{ runner.os }}-dependencies-${{ hashFiles('yarn.lock') }}
+
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '12'
+
+      - name: Run canary tests
+        run: yarn ember try:one ember-canary --skip-cleanup
+
+  default-jquery-tests:
+    needs: install-dependencies
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: actions/cache@v2
+        with:
+          path: |
+            node_modules
+          key: ${{ runner.os }}-dependencies-${{ hashFiles('yarn.lock') }}
+
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '12'
+
+      - name: Run default tests with jQuery
+        run: yarn ember try:one ember-default-with-jquery --skip-cleanup
+
+  # "Group" individual statuses into a pseudo-status that we can use for bors to watch for.
+  ci-success:
+    name: ci-finished
+    if: github.event_name == 'push' && success()
+    runs-on: ubuntu-latest
+
+    needs:
+      - lint
+      - default-tests
+      - release-tests
+      - beta-tests
+      - default-jquery-tests
+
+    steps:
+      - name: Mark the job as a success
+        run: exit 0
+
+  ci-failure:
+    name: ci-finished
+    if: github.event_name == 'push' && !success()
+    runs-on: ubuntu-latest
+
+    needs:
+      - lint
+      - default-tests
+      - release-tests
+      - beta-tests
+      - default-jquery-tests
+
+    steps:
+      - name: Mark the job as a failure
+        run: exit 1
