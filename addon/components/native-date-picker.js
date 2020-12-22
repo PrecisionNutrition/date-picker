@@ -14,7 +14,7 @@ export default class NativeDatePicker extends Component {
     }
   }
 
-  publishChoice(action , { target: { value } }) {
+  publishChoice(action, { target: { value } }) {
     const date = safeParse(value);
 
     return action(date);
