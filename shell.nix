@@ -1,6 +1,6 @@
 with (import <nixpkgs> {});
 let
-  pn_overlay = import (builtins.fetchTarball https://github.com/PrecisionNutrition/nixpkgs-pn/archive/0.0.3.tar.gz);
+  pn_overlay = import (builtins.fetchTarball https://github.com/PrecisionNutrition/nixpkgs-pn/archive/0.2.2.tar.gz);
 
   pkgs = import <nixpkgs> { overlays = [ pn_overlay ]; };
 
